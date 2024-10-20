@@ -22,6 +22,8 @@ func main() {
 
 	router.GET("/stream/:filename", controller.StreamHandler())
 
+	router.GET("/video/:filename", controller.VideoPageHandler())
+
 	router.Run(":8080")
 
 }

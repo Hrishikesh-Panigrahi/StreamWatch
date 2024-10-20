@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,5 +26,26 @@ func StreamHandler() gin.HandlerFunc {
 		c.Writer.Header().Set("Content-Disposition", "inline; filename="+filename+".mp4")
 		buffer := make([]byte, 64*1024)
 		io.CopyBuffer(c.Writer, file, buffer)
+	}
+}
+
+func VideoPageHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		filename := c.Param("filename")
+		tmpl, err := template.ParseFiles("../templates/index.html") 
+		
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error loading template")
+			return
+		}
+
+		data := struct {
+			Filename string
+		}{
+			Filename: filename,
+		}
+
+		c.Header("Content-Type", "text/html")
+		tmpl.Execute(c.Writer, data)
 	}
 }
