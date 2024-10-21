@@ -9,6 +9,9 @@ import (
 
 func main() {
 	router := gin.Default()
+	router.Static("/static", "./web/static")
+	
+	router.LoadHTMLGlob("web/templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello World")

@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"log"
 	"net/http"
-	"text/template"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,24 +9,21 @@ import (
 func VideoPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		filename := c.Param("filename")
-		tmpl, err := template.ParseFiles("./templates/index.html")
 
-		if err != nil {
-			c.String(http.StatusInternalServerError, "Error loading template file", err)
+		if filename == "" {
+			c.HTML(http.StatusNotFound, "Video not found", nil)
 			return
 		}
 
-		data := struct {
-			Filename string
-		}{
-			Filename: filename,
-		}
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"Filename": filename,
+		})
 
-		c.Header("Content-Type", "text/html")
-
-		if err := tmpl.Execute(c.Writer, data); err != nil {
-			log.Printf("Error executing template: %v", err)
-			c.String(http.StatusInternalServerError, "Template execution error: %v", err)
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to render template"})
+		// 	// Optionally log the error
+		// 	// log.Printf("Error rendering template: %v", err)
+		// 	return
+		// }
 	}
 }

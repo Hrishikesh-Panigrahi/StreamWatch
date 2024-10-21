@@ -1,0 +1,43 @@
+.player-container {
+    position: relative;
+    width: 400px;
+    height: 225px; 
+    transition: width 0.3s, height 0.3s;
+}
+
+.player-container.fullscreen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.custom-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 0 0 12px 12px;
+}
+
+.play-button {
+    background: white;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+.play-button:hover {
+    background: gray;
+}
+
+.fullscreen-btn {
+    cursor: pointer;
+    color: white;
+}
