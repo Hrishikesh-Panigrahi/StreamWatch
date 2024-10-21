@@ -1,18 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>Video Stream</title>
+    <style>
+        .player-container {
+            position: relative;
+            width: 400px;
+            height: 225px; 
+            transition: width 0.3s, height 0.3s;
+        }
+      
+        .player-container.fullscreen {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .play-button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .play-button:hover {
+            background: gray;
+        }
+
+        .fullscreen-btn {
+            cursor: pointer;
+            color: white;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-        <h1 class="text-2xl font-bold mb-4">Video Player</h1>
-        <video controls class="w-full">
-            <source src="/stream/{{ .Filename }}" type="video/mp4">
+
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
+    <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
+        <video
+            id="video"
+            class="w-full h-full rounded-lg"
+            preload="auto"
+            poster="https://via.placeholder.com/400x225.png?text=Video+Loading..."
+        >
+            <source src="/stream/{{ .Filename }}" type="video/mp4" />
             Your browser does not support the video tag.
         </video>
+
+        <div class="custom-controls" id="controls">
+            <button class="play-button" id="playBtn">Play</button>
+            <span class="fullscreen-btn" id="fullscreenBtn">🔲</span>
+        </div>
     </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const playBtn = document.getElementById('playBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const playerContainer = document.getElementById('player-container');
+        // Play or pause video
+        playBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playBtn.textContent = 'Pause';
+            } else {
+                video.pause();
+                playBtn.textContent = 'Play';
+            }
+        });
+
+        // Toggle fullscreen mode
+        fullscreenBtn.addEventListener('click', () => {
+            playerContainer.classList.toggle('fullscreen');
+        });
+
+        // Auto-hide controls when not interacting
+        let timeout;
+        playerContainer.addEventListener('mousemove', () => {
+            clearTimeout(timeout);
+            document.getElementById('controls').style.opacity = '1';
+            timeout = setTimeout(() => {
+                document.getElementById('controls').style.opacity = '0';
+            }, 3000);
+        });
+    </script>
 </body>
+
 </html>
