@@ -3,27 +3,19 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
 	"github.com/gin-gonic/gin"
 )
 
 func VideoPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		filename := c.Param("filename")
+		filename := c.Query("filename")
 
 		if filename == "" {
-			c.HTML(http.StatusNotFound, "Video not found", nil)
+			render.RenderHtml(c, http.StatusBadRequest, "error.html", "No video file specified.")
 			return
 		}
 
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"Filename": filename,
-		})
-
-		// if err != nil {
-		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to render template"})
-		// 	// Optionally log the error
-		// 	// log.Printf("Error rendering template: %v", err)
-		// 	return
-		// }
+		render.RenderHtml(c, http.StatusOK, "videoTemplate.html", filename)
 	}
 }

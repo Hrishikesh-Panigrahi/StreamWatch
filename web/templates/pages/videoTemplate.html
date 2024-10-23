@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Custom Video Player</title>
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../static/css/style.css" />
+</head>
+
+<body>
+	<div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
+		<div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
+			<video id="video" class="w-full h-full rounded-lg" preload="auto"
+				poster="https://via.placeholder.com/400x225.png?text=Video+Loading...">
+				<source src="/stream/{{ .data }}" type="video/mp4" />
+				Your browser does not support the video tag.
+			</video>
+			<div class="custom-controls" id="controls">
+				<button class="play-button" id="playBtn">Play</button>
+				<span class="fullscreen-btn" id="fullscreenBtn">🔲</span>
+			</div>
+		</div>
+	</div>
+	<script src="../../static/js/script.js"></script>
+</body>
+
+</html>
