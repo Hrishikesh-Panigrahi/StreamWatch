@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/controller"
 	"github.com/gin-gonic/gin"
 )
@@ -13,9 +11,7 @@ func main() {
 
 	router.LoadHTMLGlob("web/templates/**/*.html")
 
-	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello World")
-	})
+	router.GET("/", controller.HomePageHandler())
 
 	// API for video streaming
 	router.GET("/stream/:filename", controller.StreamHandler())

@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <title>Error</title>
 </head>
-<body>
-    Error -> {{ .data }}
+
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+    <div class="text-center">
+        <h1 class="text-6xl font-bold text-red-500 mb-4">Oops!</h1>
+        <p class="text-lg text-gray-300 mb-6">Something went wrong. Please try again.</p>
+        <p class="text-md text-gray-400">{{ .data }}</p>
+        <a href="/"
+            class="mt-6 inline-block px-8 py-3 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition duration-300">
+            Go Back Home
+        </a>
+    </div>
 </body>
+
 </html>
