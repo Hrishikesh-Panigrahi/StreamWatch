@@ -1,0 +1,38 @@
+<!-- templates/base.html -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <title> {{ block "title" . }}{{ end }} </title>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+
+<body>
+    <main>
+        {{ if eq .data.Title "Index" }}
+            {{ block "contentIndex" . }}{{ end }}
+        {{ else if eq .data.Title "Video" }}
+            {{ block "videoTemplate" . }}{{ end }}
+            
+        {{ else if eq .data.Title "Error" }}
+            {{ block "errorTemplate" . }}{{ end }}
+        {{ else }}
+            <h2>Page not found</h2>
+            <p>The page you are looking for does not exist.</p>
+        {{ end }}
+    </main>
+
+    <footer>
+        <p>Footer content here</p>
+    </footer>
+   
+    
+</body>
+
+</html>

@@ -11,20 +11,34 @@ func HomePageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// TODO: get all the videos.
 
+		type Data struct {
+			Title   string
+			Message string
+		}
 
-		render.RenderHtml(c, http.StatusOK, "index.html", nil)
+		data := Data{Title: "Index", Message: "this is index"}
+
+		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
 
 func VideoPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		filename := c.Query("filename")
+		type Data struct {
+			Title    string
+			Message  string
+			Filename string
+		}
 
 		if filename == "" {
-			render.RenderHtml(c, http.StatusBadRequest, "error.html", "No video file specified.")
+			data := Data{Title: "Error", Message: "No video file specified."}
+			render.RenderHtml(c, http.StatusBadRequest, "error.html", data)
 			return
 		}
 
-		render.RenderHtml(c, http.StatusOK, "videoTemplate.html", filename)
+		data := Data{Title: "Video", Message: "this is index", Filename: filename}
+
+		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
