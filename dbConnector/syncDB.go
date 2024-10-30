@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
+
+	models "github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 )
 
 func SyncDB() {
@@ -12,10 +14,9 @@ func SyncDB() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	err = DB.AutoMigrate()
+	err = DB.AutoMigrate(&models.User{}, &models.Video{})
 	if err != nil {
 		log.Fatal("Error migrating the database")
 	}
-	// Sync database
-	fmt.Println("Database synced")
+	fmt.Println("Database Synced")
 }
