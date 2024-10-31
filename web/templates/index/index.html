@@ -4,17 +4,19 @@
         <div class="min-h-28">
            
             <div class="gap-6 mt-8 mx-4 md:flex">
+                {{ range .data.Videos }}
+                   
                 <div class="md:w-1/2">
                     <div class="wrap-video">
                         <video class="object-cover h-96 w-full bg-black" loop="">
                             <source
-                                src="https://assets-global.website-files.com/62d57921074baa1ce7275405/6363f65c00474db467bed81b_Screen%20Recording%202022-11-03%20at%2011018%20PM-transcode.mp4"
+                                src="../../.{{ .Path }}"
                                 type="video/mp4">
                         </video>
                     </div>
                     <span class="pt-4 grid grid-cols-6 gap-4">
                         <span class="col-start-1 col-end-3 font-bold text-lg text-white uppercase font-mono">
-                            juno
+                            {{ .Name }}
                         </span>
                         <span class="col-end-7 col-span-2 text-sm text-slate-500 uppercase font-mono flex justify-end">
                             <span class="">
@@ -22,32 +24,13 @@
                             </span>
                         </span>
                     </span>
-                    <span class="block text-slate-400 text-xs uppercase font-mono">
-                        grandma cabbage
+                    <span class="block text-white text-xs uppercase font-mono">
+                        {{ .User.Name }}
                     </span>
                 </div>
-                <div class="md:w-1/2">
-                    <div class="wrap-video">
-                        <video class="object-cover h-96 w-full bg-black" loop="">
-                            <source
-                                src="https://assets-global.website-files.com/62d57921074baa1ce7275405/63c084f55da78823643adbc3_ThePerfectPants-transcode.mp4"
-                                type="video/mp4">
-                        </video>
-                    </div>
-                    <span class="pt-4 grid grid-cols-6 gap-4">
-                        <span class="col-start-1 col-end-3 font-bold text-lg text-white uppercase font-mono">
-                            cala x public
-                        </span>
-                        <span class="col-end-7 col-span-2 text-sm text-slate-500 uppercase font-mono flex justify-end">
-                            <span class="">
-                                music video
-                            </span>
-                        </span>
-                    </span>
-                    <span class="block text-slate-400 text-xs uppercase font-mono">
-                        transportation the perfect pants
-                    </span>
-                </div>
+
+                {{ end }}
+              
             </div>
         </div>
     </div>

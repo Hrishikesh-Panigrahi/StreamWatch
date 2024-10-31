@@ -15,11 +15,12 @@ func init() {
 func main() {
 	router := gin.Default()
 	router.Static("/static", "./web/static")
+	router.Static("/tempVideos", "./tempVideos")
 
 	router.LoadHTMLGlob("web/templates/**/*.html")
 
 	routers := router.Group("/")
 	routes.Routes(routers)
-	
+
 	router.Run(":8080")
 }
