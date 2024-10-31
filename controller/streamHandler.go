@@ -14,15 +14,13 @@ func StreamHandler() gin.HandlerFunc {
 		filename := c.Param("filename")
 		fmt.Println("Streaming file:", filename)
 
-		// Open the video file
-		file, err := os.Open("./tempVideos/" + filename + ".mp4")
+		file, err := os.Open("./tempVideos/" + filename)
 		if err != nil {
 			c.String(http.StatusNotFound, "Video not found.")
 			return
 		}
 		defer file.Close()
 
-		// Get the file size
 		fileInfo, err := file.Stat()
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Unable to get file info.")

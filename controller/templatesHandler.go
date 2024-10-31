@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
@@ -31,20 +32,30 @@ func HomePageHandler() gin.HandlerFunc {
 
 func VideoPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		filename := c.Query("filename")
+		VideoUUID := c.Query("videoUUID")
+		var video models.Video
+
 		type Data struct {
-			Title    string
-			Message  string
-			Filename string
+			Title   string
+			Message string
+			Video   models.Video
 		}
 
-		if filename == "" {
+		if VideoUUID == "" {
 			data := Data{Title: "Error", Message: "No video file specified."}
 			render.RenderHtml(c, http.StatusBadRequest, "error.html", data)
 			return
 		}
 
-		data := Data{Title: "Video", Message: "this is index", Filename: filename}
+		err := dbConnector.DB.Preload("User").Where("uuid = ?", VideoUUID).First(&video).Error
+
+		if err != nil {
+			data := Data{Title: "Error", Message: "Video not found."}
+			render.RenderHtml(c, http.StatusNotFound, "error.html", data)
+			return
+		}
+		fmt.Println(video.Name)
+		data := Data{Title: "Video", Message: "this is index", Video: video}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}

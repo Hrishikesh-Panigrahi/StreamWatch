@@ -2,17 +2,18 @@
 {{ define "contentIndex" }}
     <div class="relative flex min-h-screen flex-col bg-black">
         <div class="min-h-28">
-           
             <div class="gap-6 mt-8 mx-4 md:flex">
                 {{ range .data.Videos }}
                    
                 <div class="md:w-1/2">
                     <div class="wrap-video">
-                        <video class="object-cover h-96 w-full bg-black" loop="">
-                            <source
-                                src="../../.{{ .Path }}"
-                                type="video/mp4">
-                        </video>
+                        <a href="/video/?videoUUID={{ .UUID }}">
+                            <video class="object-cover h-96 w-full bg-black" loop="">
+                                <source
+                                    src="../../.{{ .Path }}"
+                                    type="video/mp4">
+                            </video>
+                        </a>
                     </div>
                     <span class="pt-4 grid grid-cols-6 gap-4">
                         <span class="col-start-1 col-end-3 font-bold text-lg text-white uppercase font-mono">
@@ -28,13 +29,10 @@
                         {{ .User.Name }}
                     </span>
                 </div>
-
                 {{ end }}
-              
             </div>
         </div>
     </div>
-
     <script src="../../static/js/index.js"></script>
  
 {{ end }}
