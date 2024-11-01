@@ -1,15 +1,17 @@
 const video = document.getElementById('video');
 const playBtn = document.getElementById('playBtn');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
+const resolutionDropdown = document.getElementById('resolutionDropdown');
 const playerContainer = document.getElementById('player-container');
+
 // Play or pause video
 playBtn.addEventListener('click', () => {
     if (video.paused) {
         video.play();
-        playBtn.textContent = 'Pause';
+        playBtn.textContent = '⏸';
     } else {
         video.pause();
-        playBtn.textContent = 'Play';
+        playBtn.textContent = '⏵';
     }
 });
 
@@ -18,12 +20,13 @@ fullscreenBtn.addEventListener('click', () => {
     playerContainer.classList.toggle('fullscreen');
 });
 
-// Auto-hide controls when not interacting
-let timeout;
-playerContainer.addEventListener('mousemove', () => {
-    clearTimeout(timeout);
-    document.getElementById('controls').style.opacity = '1';
-    timeout = setTimeout(() => {
-        document.getElementById('controls').style.opacity = '0';
-    }, 3000);
+// Handle resolution change
+resolutionDropdown.addEventListener('change', () => {
+    const selectedResolution = resolutionDropdown.value;
+
+    // Update video source based on selected resolution
+    const currentSource = video.querySelector('source');
+    currentSource.src = `/stream/${selectedResolution}/${video.dataset.videoUuid}`;
+    video.load();
+    video.play();
 });

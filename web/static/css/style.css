@@ -1,7 +1,7 @@
 .player-container {
     position: relative;
-    width: 400px;
-    height: 225px; 
+    width: 640px;
+    height: 360px;
     transition: width 0.3s, height 0.3s;
 }
 
@@ -10,17 +10,8 @@
     height: 100vh;
 }
 
-.custom-controls {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 0 0 12px 12px;
+.play-button:hover {
+    background: gray;
 }
 
 .play-button {
@@ -33,11 +24,55 @@
     transition: background 0.3s;
 }
 
-.play-button:hover {
-    background: gray;
+
+.custom-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0 0 12px 12px;
+}
+
+.control-btn {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.3s;
+}
+
+.control-btn:hover {
+    color: lightgray;
+}
+
+.resolution-dropdown-container {
+    display: flex;
+    /* align-items: center; */
+    margin-right: 8px;
+}
+
+.resolution-dropdown {
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    appearance: none;
+    cursor: pointer;
+   
+}
+
+.resolution-dropdown option {
+    background-color: #333;
+    color: white;
 }
 
 .fullscreen-btn {
     cursor: pointer;
-    color: white;
 }

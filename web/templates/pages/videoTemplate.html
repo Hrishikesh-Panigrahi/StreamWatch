@@ -1,18 +1,24 @@
 {{define "title"}} Video {{end}}
 {{define "videoTemplate"}}
-	<div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
-		<div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
-			<video id="video" class="w-full h-full rounded-lg" preload="auto"
-				poster="https://via.placeholder.com/400x225.png?text=Video+Loading...">
-				<source src="/stream/{{ .data.Video.UUID }}" type="video/mp4" />
-				Your browser does not support the video tag.
-			</video>
-			<div class="custom-controls" id="controls">
-				<button class="play-button" id="playBtn">Play</button>
-				<span class="fullscreen-btn" id="fullscreenBtn">🔲</span>
-			</div>
-		</div>
-	</div>
-
-	<script src="../../static/js/script.js"></script>
+<div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
+    <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
+        <video id="video" class="w-full h-full rounded-lg" preload="auto"
+            poster="https://via.placeholder.com/400x225.png?text=Video+Loading...">
+            <source src="/stream/{{ .data.Video.UUID }}" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div class="custom-controls" id="controls">
+            <button class="control-btn" id="playBtn">⏵</button>
+            <div class="resolution-dropdown-container">
+                <select id="resolutionDropdown" class="resolution-dropdown">
+                    <option value="1080p">1080p</option>
+                    <option value="720p">720p</option>
+                    <option value="480p">480p</option>
+                </select>
+            </div>
+            <button class="control-btn" id="fullscreenBtn">⛶</button>
+        </div>
+    </div>
+</div>
+<script src="../../static/js/script.js"></script>
 {{end}}
