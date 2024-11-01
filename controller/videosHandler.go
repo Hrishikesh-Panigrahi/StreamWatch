@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/exec"
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/utils"
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
@@ -67,7 +67,7 @@ func CreateVideo() gin.HandlerFunc {
 
 		for _, res := range resolutions {
 			outputPath := fmt.Sprintf("%s/%s_%s.mp4", folderPath, file.Filename, res)
-			err := createResolution(originalVideoPath, outputPath, res)
+			err := utils.CreateResolution(originalVideoPath, outputPath, res)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create %s resolution", res)})
 				return
@@ -92,24 +92,4 @@ func CreateVideo() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"message": "Video is created", "videoPath": originalVideoPath})
 
 	}
-}
-
-// Helper function to create video resolution using FFmpeg
-func createResolution(inputPath, outputPath, resolution string) error {
-	var ffmpegCmd *exec.Cmd
-	switch resolution {
-	case "480p":
-		ffmpegCmd = exec.Command("ffmpeg", "-i", inputPath, "-vf", "scale=854:480", outputPath)
-	case "720p":
-		ffmpegCmd = exec.Command("ffmpeg", "-i", inputPath, "-vf", "scale=1280:720", outputPath)
-	case "1080p":
-		ffmpegCmd = exec.Command("ffmpeg", "-i", inputPath, "-vf", "scale=1920:1080", outputPath)
-	default:
-		return fmt.Errorf("unsupported resolution")
-	}
-
-	if err := ffmpegCmd.Run(); err != nil {
-		return fmt.Errorf("ffmpeg error: %v", err)
-	}
-	return nil
 }

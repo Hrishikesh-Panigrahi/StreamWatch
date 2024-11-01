@@ -12,8 +12,6 @@ import (
 
 func HomePageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// TODO: get all the videos.
-
 		var videos []models.Video
 
 		dbConnector.DB.Preload("User").Find(&videos)
