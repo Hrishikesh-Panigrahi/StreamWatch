@@ -11,7 +11,7 @@ func Routes(superRoute *gin.RouterGroup) {
 	superRoute.POST("create/video", controller.CreateVideo())
 
 	// API for video streaming
-	superRoute.GET("/stream/:filename", controller.StreamHandler())
+	superRoute.GET("/stream/:UUID", controller.StreamHandler())
 
 	// frontend url -- The request responds to a url matching: /video?UUID=xxxx-xxxx-xxxx-xxxx
 	superRoute.GET("/video", controller.VideoPageHandler())

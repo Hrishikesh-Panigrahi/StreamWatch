@@ -6,15 +6,28 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 	"github.com/gin-gonic/gin"
 )
 
 func StreamHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		filename := c.Param("filename")
-		fmt.Println("Streaming file:", filename)
+		var user models.User
+		userID := 1
 
-		file, err := os.Open("./tempVideos/" + filename)
+		dbConnector.DB.First(&user, userID)
+
+		fileUUID := c.Param("UUID")
+
+		var video models.Video
+		dbConnector.DB.Where("uuid = ?", fileUUID).First(&video)
+
+		filefolder := video.Name
+		filename := "test.mp4_480p.mp4"
+		path := fmt.Sprintf("./tempVideos/%s_%s_%s/%s", filefolder, user.Name, fileUUID, filename)
+
+		file, err := os.Open(path)
 		if err != nil {
 			c.String(http.StatusNotFound, "Video not found.")
 			return
