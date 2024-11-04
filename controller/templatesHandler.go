@@ -15,7 +15,24 @@ func HomePageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var videos []models.Video
 
-		dbConnector.DB.Preload("User").Find(&videos)
+		err := dbConnector.DB.Preload("User").Find(&videos).Error
+
+		if err != nil {
+			fmt.Printf("Error retrieving videos: %v\n", err)
+
+			type ErrorData struct {
+				Title   string
+				Message string
+			}
+
+			data := ErrorData{
+				Title:   "Error",
+				Message: "An error occurred while loading videos. Please try again later.",
+			}
+
+			render.RenderHtml(c, http.StatusInternalServerError, "error.html", data)
+			return
+		}
 
 		type Data struct {
 			Title   string
@@ -49,14 +66,19 @@ func VideoPageHandler() gin.HandlerFunc {
 		err := dbConnector.DB.Preload("User").Where("uuid = ?", VideoUUID).First(&video).Error
 
 		if err != nil {
+			type ErrorData struct {
+				Title   string
+				Message string
+			}
+
 			fmt.Printf("Error retrieving video: %v\n", err)
 			if err == gorm.ErrRecordNotFound {
 				fmt.Println("Video not found")
-				data := Data{Title: "Error", Message: "Video not found with the provided UUID."}
+				data := ErrorData{Title: "Error", Message: "Video not found with the provided UUID."}
 				render.RenderHtml(c, http.StatusNotFound, "base.html", data)
 			} else {
 				fmt.Printf("Error retrieving video: %v\n", err)
-				data := Data{Title: "Error", Message: "An error occurred while fetching the video."}
+				data := ErrorData{Title: "Error", Message: "An error occurred while fetching the video."}
 				render.RenderHtml(c, http.StatusInternalServerError, "base.html", data)
 			}
 			return
