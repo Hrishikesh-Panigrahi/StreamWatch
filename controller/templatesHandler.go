@@ -8,6 +8,7 @@ import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func HomePageHandler() gin.HandlerFunc {
@@ -17,9 +18,9 @@ func HomePageHandler() gin.HandlerFunc {
 		dbConnector.DB.Preload("User").Find(&videos)
 
 		type Data struct {
-			Title              string
-			Message            string
-			Videos             []models.Video
+			Title   string
+			Message string
+			Videos  []models.Video
 		}
 
 		data := Data{Title: "Index", Message: "this is index", Videos: videos}
@@ -41,17 +42,26 @@ func VideoPageHandler() gin.HandlerFunc {
 
 		if VideoUUID == "" {
 			data := Data{Title: "Error", Message: "No video file specified."}
-			render.RenderHtml(c, http.StatusBadRequest, "error.html", data)
+			render.RenderHtml(c, http.StatusBadRequest, "base.html", data)
 			return
 		}
 
 		err := dbConnector.DB.Preload("User").Where("uuid = ?", VideoUUID).First(&video).Error
 
 		if err != nil {
-			data := Data{Title: "Error", Message: "Video not found."}
-			render.RenderHtml(c, http.StatusNotFound, "error.html", data)
+			fmt.Printf("Error retrieving video: %v\n", err)
+			if err == gorm.ErrRecordNotFound {
+				fmt.Println("Video not found")
+				data := Data{Title: "Error", Message: "Video not found with the provided UUID."}
+				render.RenderHtml(c, http.StatusNotFound, "base.html", data)
+			} else {
+				fmt.Printf("Error retrieving video: %v\n", err)
+				data := Data{Title: "Error", Message: "An error occurred while fetching the video."}
+				render.RenderHtml(c, http.StatusInternalServerError, "base.html", data)
+			}
 			return
 		}
+
 		fmt.Println(video.Name)
 		data := Data{Title: "Video", Message: "this is index", Video: video}
 

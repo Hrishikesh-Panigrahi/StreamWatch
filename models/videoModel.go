@@ -12,9 +12,8 @@ type Video struct {
 
 // func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
 // 	videoPath := v.Path
-// 	if len(videoPath) > 10 { // Ensure path length is sufficient before slicing
-// 		videoPath = videoPath[:len(videoPath)-10]
-// 	}
+// 	videoPath = videoPath[:len(videoPath)-10]
+
 // 	videoPath = videoPath + v.Name + ".mp4"
 // 	v.OriginalVideoPath = videoPath
 
