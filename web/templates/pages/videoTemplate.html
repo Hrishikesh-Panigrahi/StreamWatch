@@ -1,10 +1,17 @@
 {{define "title"}} Video {{end}}
 {{define "videoTemplate"}}
+
+<script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+<script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.min.js"></script>
+
+
 <div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
     <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
         <video id="video" class="w-full h-full rounded-lg" preload="auto"
-            poster="https://via.placeholder.com/400x225.png?text=Video+Loading...">
-            <source src="/stream/{{ .data.Video.UUID }}" type="video/mp4" />
+            poster="https://via.placeholder.com/400x225.png?text=Video+Loading..." class="video-js vjs-default-skin">
+            <source
+                src="tempVideos/{{ .data.Video.Name }}_{{ .data.Video.User.Name }}_{{ .data.Video.UUID }}/master.m3u8"
+                type="application/x-mpegURL" />
             Your browser does not support the video tag.
         </video>
         <div class="custom-controls" id="controls">
@@ -21,4 +28,11 @@
     </div>
 </div>
 <script src="../../static/js/script.js"></script>
+
+
+<script>
+    var player = videojs('video');
+    player.play();
+</script>
+
 {{end}}

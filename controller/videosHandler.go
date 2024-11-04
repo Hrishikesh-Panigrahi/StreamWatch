@@ -1,13 +1,14 @@
 package controller
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
-	"github.com/Hrishikesh-Panigrahi/StreamWatch/utils"
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
@@ -63,15 +64,37 @@ func CreateVideo() gin.HandlerFunc {
 			return
 		}
 
-		resolutions := []string{"480p", "720p", "1080p"}
+		// resolutions := []string{"480p", "720p", "1080p"}
 
-		for _, res := range resolutions {
-			outputPath := fmt.Sprintf("%s/%s_%s.mp4", folderPath, file.Filename, res)
-			err := utils.CreateResolution(originalVideoPath, outputPath, res)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create %s resolution", res)})
-				return
-			}
+		// for _, res := range resolutions {
+		// 	// tod0: filename:= timestamp ... for sorting
+		// 	outputPath := fmt.Sprintf("%s/%s_%s.mp4", folderPath, file.Filename, res)
+		// 	err := utils.CreateResolution(originalVideoPath, outputPath, res)
+		// 	if err != nil {
+		// 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create %s resolution", res)})
+		// 		return
+		// 	}
+		// }
+
+		masterPlaylist := folderPath + "/master.m3u8"
+		cmd := exec.Command("ffmpeg", "-i", originalVideoPath,
+			// HLS output options
+			"-f", "hls", "-hls_time", "4", "-hls_playlist_type", "vod",
+			"-hls_segment_filename", folderPath+"/segment_%03d.ts",
+			folderPath+"/master.m3u8",
+		)
+
+		var stderrOutput bytes.Buffer
+		cmd.Stderr = &stderrOutput
+
+		// Run FFmpeg command
+		if err := cmd.Run(); err != nil {
+			// Log the FFmpeg error output for debugging
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "Failed to transcode video",
+				"details": stderrOutput.String(),
+			})
+			return
 		}
 
 		// Truncate filename if it's too long
@@ -84,7 +107,7 @@ func CreateVideo() gin.HandlerFunc {
 			UserID: uint(userID),
 			UUID:   UUIDid.String(),
 			Name:   filename,
-			Path:   originalVideoPath,
+			Path:   masterPlaylist,
 		}
 
 		dbConnector.DB.Create(&video)

@@ -30,3 +30,12 @@ resolutionDropdown.addEventListener('change', () => {
     video.load();
     video.play();
 });
+
+
+if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource('/videos/{{ .data.Video.UUID }}/master.m3u8');
+    hls.attachMedia(video);
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = '/videos/{{ .data.Video.UUID }}/master.m3u8';
+}
