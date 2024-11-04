@@ -17,9 +17,9 @@ func HomePageHandler() gin.HandlerFunc {
 		dbConnector.DB.Preload("User").Find(&videos)
 
 		type Data struct {
-			Title   string
-			Message string
-			Videos  []models.Video
+			Title              string
+			Message            string
+			Videos             []models.Video
 		}
 
 		data := Data{Title: "Index", Message: "this is index", Videos: videos}

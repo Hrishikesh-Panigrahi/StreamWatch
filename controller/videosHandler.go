@@ -50,6 +50,11 @@ func CreateVideo() gin.HandlerFunc {
 			return
 		}
 
+		filename := file.Filename
+		if len(filename) > 50 {
+			filename = filename[:50]
+		}
+
 		// Construct folder path (optionally, add UUID or timestamp)
 		folderName := fmt.Sprintf("%s_%s_%s", file.Filename, user.Name, UUIDid.String())
 		folderPath := "./tempVideos/" + folderName
@@ -98,16 +103,13 @@ func CreateVideo() gin.HandlerFunc {
 		}
 
 		// Truncate filename if it's too long
-		filename := file.Filename
-		if len(filename) > 50 {
-			filename = filename[:50]
-		}
 
 		video := models.Video{
-			UserID: uint(userID),
-			UUID:   UUIDid.String(),
-			Name:   filename,
-			Path:   masterPlaylist,
+			UserID:            uint(userID),
+			UUID:              UUIDid.String(),
+			Name:              filename,
+			Path:              masterPlaylist,
+			OriginalVideoPath: originalVideoPath,
 		}
 
 		dbConnector.DB.Create(&video)
