@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/controller"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +16,7 @@ func Routes(superRoute *gin.RouterGroup) {
 
 	superRoute.GET("/", controller.HomePageHandler())
 
-	superRoute.POST("create/video", controller.CreateVideo())
+	superRoute.POST("create/video", middleware.AuthMiddleware, controller.CreateVideo())
 
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())

@@ -93,12 +93,12 @@ func VideoPageHandler() gin.HandlerFunc {
 
 func LoginPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		render.RenderHtml(c, http.StatusOK, "login.html", nil)
+		render.RenderHtml(c, http.StatusOK, "base.html", nil)
 	}
 }
 
 func RegisterPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		render.RenderHtml(c, http.StatusOK, "register.html", nil)
+		render.RenderHtml(c, http.StatusOK, "base.html", nil)
 	}
 }

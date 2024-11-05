@@ -42,6 +42,8 @@ func CreateVideo() gin.HandlerFunc {
 		cookieuser, _ := c.Get("user")
 		userID := cookieuser.(models.User).ID
 
+		fmt.Println(userID)
+
 		var user models.User
 		err := dbConnector.DB.First(&user, userID).Error
 
