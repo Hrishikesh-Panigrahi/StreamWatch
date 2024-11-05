@@ -30,7 +30,7 @@ func HomePageHandler() gin.HandlerFunc {
 				Message: "An error occurred while loading videos. Please try again later.",
 			}
 
-			render.RenderHtml(c, http.StatusInternalServerError, "error.html", data)
+			render.RenderHtml(c, http.StatusInternalServerError, "base.html", data)
 			return
 		}
 

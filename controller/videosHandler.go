@@ -9,6 +9,7 @@ import (
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
@@ -38,11 +39,28 @@ func CreateVideo() gin.HandlerFunc {
 
 		UUIDid := uuid.New()
 
-		var user models.User
-		// temp user id for testing
-		userID := 1
+		cookieuser, _ := c.Get("user")
+		userID := cookieuser.(models.User).ID
 
-		dbConnector.DB.First(&user, userID)
+		var user models.User
+		err := dbConnector.DB.First(&user, userID).Error
+
+		if err != nil {
+			fmt.Printf("Error retrieving User: %v\n", err)
+
+			type ErrorData struct {
+				Title   string
+				Message string
+			}
+
+			data := ErrorData{
+				Title:   "Error",
+				Message: "An error occurred while retrieving User. Please try after logging in again.",
+			}
+
+			render.RenderHtml(c, http.StatusInternalServerError, "base.html", data)
+			return
+		}
 
 		file, err := c.FormFile("video")
 		if err != nil {
