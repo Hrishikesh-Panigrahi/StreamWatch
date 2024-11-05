@@ -6,6 +6,13 @@ import (
 )
 
 func Routes(superRoute *gin.RouterGroup) {
+
+	superRoute.GET("/login", controller.LoginPageHandler())
+	superRoute.POST("/login", controller.LoginHandler())
+
+	superRoute.GET("/register", controller.RegisterPageHandler())
+	superRoute.POST("/register", controller.RegisterHandler())
+
 	superRoute.GET("/", controller.HomePageHandler())
 
 	superRoute.POST("create/video", controller.CreateVideo())
