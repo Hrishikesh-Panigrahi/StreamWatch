@@ -54,30 +54,33 @@ func CreateVideoHandler() gin.HandlerFunc {
 		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
 			fmt.Printf("Error retrieving User: %v\n", err)
 
-			type ErrorData struct {
-				Title   string
-				Message string
-			}
-
-			data := ErrorData{
-				Title:   "Error",
-				Message: "An error occurred while retrieving User. Please try after logging in again.",
-			}
-
-			render.RenderHtml(c, http.StatusInternalServerError, "base.html", data)
+			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the user. Please try again later.")
 			return
 		}
 
 		file, fileHeader, err := c.Request.FormFile("videoFile")
+		if err != nil {
+			render.RenderError(c, http.StatusBadRequest, "No video uploaded. Please upload a video and submit the form.")
+			return
+		}
+		defer file.Close()
+
+		if file == nil || fileHeader == nil {
+			render.RenderError(c, http.StatusBadRequest, "No file uploaded.")
+			return
+		}
+
+		fileType := fileHeader.Header.Get("Content-Type")
+		if fileType != "video/mp4" && fileType != "video/x-matroska" {
+			render.RenderError(c, http.StatusUnsupportedMediaType, "Unsupported file type. Only MP4 and MKV are allowed.")
+			return
+		}
+
 		name := c.PostForm("videoTitle")
 		tags := c.PostForm("tags")
 		description := c.PostForm("description")
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Video file is required"})
-			return
-		}
-		fmt.Print(file, name, tags, description)
+		fmt.Print(fileHeader.Filename, name, tags, description)
 
 		filename := name
 		if len(filename) > 50 {
@@ -88,27 +91,15 @@ func CreateVideoHandler() gin.HandlerFunc {
 		folderName := fmt.Sprintf("%s_%s_%s", name, user.Name, UUIDid.String())
 		folderPath := "./tempVideos/" + folderName
 		if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create folder for video"})
+			render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
 			return
 		}
 
 		originalVideoPath := folderPath + "/" + name + ".mp4"
 		if err := c.SaveUploadedFile(fileHeader, originalVideoPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save video file"})
+			render.RenderError(c, http.StatusInternalServerError, "Failed to save video")
 			return
 		}
-
-		// resolutions := []string{"480p", "720p", "1080p"}
-
-		// for _, res := range resolutions {
-		// 	// tod0: filename:= timestamp ... for sorting
-		// 	outputPath := fmt.Sprintf("%s/%s_%s.mp4", folderPath, file.Filename, res)
-		// 	err := utils.CreateResolution(originalVideoPath, outputPath, res)
-		// 	if err != nil {
-		// 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create %s resolution", res)})
-		// 		return
-		// 	}
-		// }
 
 		masterPlaylist := folderPath + "/master.m3u8"
 		cmd := exec.Command("ffmpeg", "-i", originalVideoPath,
@@ -123,15 +114,11 @@ func CreateVideoHandler() gin.HandlerFunc {
 
 		// Run FFmpeg command
 		if err := cmd.Run(); err != nil {
-			// Log the FFmpeg error output for debugging
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   "Failed to transcode video",
-				"details": stderrOutput.String(),
-			})
+			fmt.Println("Error running FFmpeg command: ", err)
+			fmt.Println("FFmpeg stderr: ", stderrOutput.String())
+			render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
 			return
 		}
-
-		// Truncate filename if it's too long
 
 		video := models.Video{
 			UserID:            uint(userID),
@@ -143,9 +130,13 @@ func CreateVideoHandler() gin.HandlerFunc {
 			OriginalVideoPath: originalVideoPath,
 		}
 
-		dbConnector.DB.Create(&video)
+		if err := dbConnector.DB.Create(&video).Error; err != nil {
+			fmt.Printf("Error creating video: %v\n", err)
+			render.RenderError(c, http.StatusInternalServerError, "Failed to create or save the video. Check your internet connection and try again.")
+			return
+		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "Video is created", "videoPath": originalVideoPath})
+		render.Redirect(c, "/", http.StatusFound)
 
 	}
 }

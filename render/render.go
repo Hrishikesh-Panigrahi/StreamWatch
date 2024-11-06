@@ -18,7 +18,7 @@ func RenderHtml(c *gin.Context, status int, html string, data interface{}) error
 	return nil
 }
 
-func RenderError(c *gin.Context, status int, message string) {
+func RenderError(c *gin.Context, status int, message string, template ...string) {
 	type ErrorData struct {
 		Title   string
 		Message string
@@ -26,10 +26,15 @@ func RenderError(c *gin.Context, status int, message string) {
 
 	data := ErrorData{
 		Title:   "Error",
-		Message: "An error occurred while registering the user. Please try again later.",
+		Message: message,
 	}
 
-	RenderHtml(c, status, "base.html", data)
+	errorTemplate := "base.html"
+	if len(template) > 0 {
+		errorTemplate = template[0]
+	}
+
+	RenderHtml(c, status, errorTemplate, data)
 }
 
 func Redirect(c *gin.Context, url string, code int) {
