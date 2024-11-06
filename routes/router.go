@@ -7,6 +7,7 @@ import (
 )
 
 func Routes(superRoute *gin.RouterGroup) {
+	superRoute.GET("/", controller.HomePageHandler())
 
 	superRoute.GET("/login", controller.LoginPageHandler())
 	superRoute.POST("/login", controller.LoginHandler())
@@ -14,13 +15,14 @@ func Routes(superRoute *gin.RouterGroup) {
 	superRoute.GET("/register", controller.RegisterPageHandler())
 	superRoute.POST("/register", controller.RegisterHandler())
 
-	superRoute.GET("/", controller.HomePageHandler())
+	superRoute.GET("/logout", controller.LogoutHandler())
 
-	superRoute.POST("create/video", middleware.AuthMiddleware, controller.CreateVideo())
+	superRoute.POST("create/video", middleware.AuthMiddleware, controller.CreateVideoHandler())
+	superRoute.GET("create/video", middleware.AuthMiddleware,controller.CreateVideoPageHandler())
 
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())
-
 	// frontend url -- The request responds to a url matching: /video?UUID=xxxx-xxxx-xxxx-xxxx
 	superRoute.GET("/video", controller.VideoPageHandler())
+
 }

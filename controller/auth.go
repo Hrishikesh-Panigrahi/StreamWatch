@@ -107,3 +107,10 @@ func LoginHandler() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{})
 	}
 }
+
+func LogoutHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie("token", "", -1, "", "", false, true)
+		c.JSON(http.StatusOK, gin.H{})
+	}
+}

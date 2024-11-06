@@ -34,20 +34,24 @@ func AddVideo() gin.HandlerFunc {
 	}
 }
 
-func CreateVideo() gin.HandlerFunc {
+func CreateVideoHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		UUIDid := uuid.New()
 
-		cookieuser, _ := c.Get("user")
+		cookieuser, exists := c.Get("user")
+
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized user"})
+			return
+		}
+
 		userID := cookieuser.(models.User).ID
 
 		fmt.Println(userID)
 
 		var user models.User
-		err := dbConnector.DB.First(&user, userID).Error
-
-		if err != nil {
+		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
 			fmt.Printf("Error retrieving User: %v\n", err)
 
 			type ErrorData struct {
@@ -64,27 +68,32 @@ func CreateVideo() gin.HandlerFunc {
 			return
 		}
 
-		file, err := c.FormFile("video")
+		file, fileHeader, err := c.Request.FormFile("videoFile")
+		name := c.PostForm("videoTitle")
+		tags := c.PostForm("tags")
+		description := c.PostForm("description")
+		
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Video file is required"})
 			return
 		}
+		fmt.Print(file, name, tags, description)
 
-		filename := file.Filename
+		filename := name
 		if len(filename) > 50 {
 			filename = filename[:50]
 		}
 
 		// Construct folder path (optionally, add UUID or timestamp)
-		folderName := fmt.Sprintf("%s_%s_%s", file.Filename, user.Name, UUIDid.String())
+		folderName := fmt.Sprintf("%s_%s_%s", name, user.Name, UUIDid.String())
 		folderPath := "./tempVideos/" + folderName
 		if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create folder for video"})
 			return
 		}
 
-		originalVideoPath := folderPath + "/" + file.Filename
-		if err := c.SaveUploadedFile(file, originalVideoPath); err != nil {
+		originalVideoPath := folderPath + "/" + name + ".mp4"
+		if err := c.SaveUploadedFile(fileHeader, originalVideoPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save video file"})
 			return
 		}
@@ -128,6 +137,8 @@ func CreateVideo() gin.HandlerFunc {
 			UserID:            uint(userID),
 			UUID:              UUIDid.String(),
 			Name:              filename,
+			Tags:              tags,
+			Description:       description,
 			Path:              masterPlaylist,
 			OriginalVideoPath: originalVideoPath,
 		}

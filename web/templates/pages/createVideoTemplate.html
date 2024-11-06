@@ -1,0 +1,36 @@
+{{define "title"}} Upload Video {{end}}
+{{define "createVideoTemplate"}}
+
+<div class="bg-black flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-semibold text-center mb-6">Upload Video</h2>
+        <form action="/create/video" method="POST" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="videoTitle">Video Title</label>
+                <input type="text" id="videoTitle" name="videoTitle" placeholder="Enter video title"
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="videoFile">Select Video File</label>
+                <input type="file" id="videoFile" name="videoFile" 
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="Enter tags (comma separated)"
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Enter a brief description"
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500"></textarea>
+            </div>
+            <button type="submit"
+                class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold text-white">Upload</button>
+        </form>
+    </div>
+
+</div>
+
+{{end}}

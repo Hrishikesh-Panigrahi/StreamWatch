@@ -93,12 +93,31 @@ func VideoPageHandler() gin.HandlerFunc {
 
 func LoginPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		render.RenderHtml(c, http.StatusOK, "base.html", nil)
+		type Data struct {
+			Title   string
+			Message string
+		}
+
+		data := Data{Title: "Login", Message: "this is Login page"}
+		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
 
 func RegisterPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		render.RenderHtml(c, http.StatusOK, "base.html", nil)
+	}
+}
+
+func CreateVideoPageHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		type Data struct {
+			Title   string
+			Message string
+		}
+
+		data := Data{Title: "Create Video", Message: "this is create video page"}
+
+		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }

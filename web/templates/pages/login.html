@@ -1,0 +1,28 @@
+{{define "title"}} Login {{end}}
+{{define "LoginTemplate"}}
+
+<div class="bg-black flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-semibold text-center mb-6">Login</h2>
+        <form action="/login" method="post">
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="username">Email</label>
+                <input type="text" name="Email" id="Email" placeholder="Enter your username"
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-300 text-sm font-bold mb-2" for="password">Password</label>
+                <input type="password" id="Password" name="Password" placeholder="Enter your password"
+                    class="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-indigo-500">
+            </div>
+            <button type="submit"
+                class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold text-white">Login</button>
+        </form>
+        <p class="text-center text-gray-400 text-sm mt-4">Don't have an account? <a href="#"
+                class="text-indigo-500 hover:underline">Sign up</a></p>
+    </div>
+
+</div>
+
+{{end}}
