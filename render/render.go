@@ -18,6 +18,20 @@ func RenderHtml(c *gin.Context, status int, html string, data interface{}) error
 	return nil
 }
 
+func RenderError(c *gin.Context, status int, message string) {
+	type ErrorData struct {
+		Title   string
+		Message string
+	}
+
+	data := ErrorData{
+		Title:   "Error",
+		Message: "An error occurred while registering the user. Please try again later.",
+	}
+
+	RenderHtml(c, status, "base.html", data)
+}
+
 func Redirect(c *gin.Context, url string, code int) {
 	c.Render(-1, render.Redirect{
 		Code:     code,

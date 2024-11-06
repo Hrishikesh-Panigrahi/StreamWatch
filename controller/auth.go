@@ -7,6 +7,7 @@ import (
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -22,17 +23,13 @@ func RegisterHandler() gin.HandlerFunc {
 		}
 
 		if c.Bind(&body) != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "failed to read body",
-			})
+			render.RenderError(c, http.StatusBadRequest, "Failed to Register the user. Please try again later.")
 			return
 		}
 
 		hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "failed to hash password",
-			})
+			render.RenderError(c, http.StatusInternalServerError, "Failed to Hash the password. Please try again later.")
 			return
 		}
 
@@ -40,13 +37,11 @@ func RegisterHandler() gin.HandlerFunc {
 		result := dbConnector.DB.Create(&user)
 
 		if result.Error != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "failed to create user",
-			})
+			render.RenderError(c, http.StatusInternalServerError, "Failed to Register the user. Please try again later.")
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{})
+		render.Redirect(c, "/login", http.StatusFound)
 	}
 }
 
@@ -61,9 +56,7 @@ func LoginHandler() gin.HandlerFunc {
 		}
 
 		if c.Bind(&body) != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "failed to read body",
-			})
+			render.RenderError(c, http.StatusBadRequest, "Failed to Login. Please try again later.")
 			return
 		}
 
@@ -72,18 +65,14 @@ func LoginHandler() gin.HandlerFunc {
 		dbConnector.DB.First(&user, "email = ?", body.Email)
 
 		if user.ID == 0 {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "invalid credentials",
-			})
+			render.RenderError(c, http.StatusUnauthorized, "Invalid Email. Please try again later.")
 			return
 		}
 
 		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "invalid pssword",
-			})
+			render.RenderError(c, http.StatusUnauthorized, "Invalid Password. Please try again later.")
 			return
 		}
 
@@ -96,9 +85,7 @@ func LoginHandler() gin.HandlerFunc {
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "failed to generate token",
-			})
+			render.RenderError(c, http.StatusInternalServerError, "Failed to generate JWT token. Please try again later.")
 			return
 		}
 

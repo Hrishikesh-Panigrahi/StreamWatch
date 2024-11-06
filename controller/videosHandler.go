@@ -42,7 +42,7 @@ func CreateVideoHandler() gin.HandlerFunc {
 		cookieuser, exists := c.Get("user")
 
 		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized user"})
+			render.RenderError(c, http.StatusUnauthorized, "User not logged in. Please login to upload video.")
 			return
 		}
 
@@ -72,7 +72,7 @@ func CreateVideoHandler() gin.HandlerFunc {
 		name := c.PostForm("videoTitle")
 		tags := c.PostForm("tags")
 		description := c.PostForm("description")
-		
+
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Video file is required"})
 			return

@@ -10,7 +10,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <title> {{ block "title" . }}{{ end }} </title>
 
-    
     <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../../static/css/style.css">
@@ -19,27 +18,27 @@
 <body>
     <main>
         {{ if eq .data.Title "Index" }}
-            {{ block "contentIndex" . }}{{ end }}
-        {{ else if eq .data.Title "Video" }}
-            {{ block "videoTemplate" . }}{{ end }}
-            
-        {{ else if eq .data.Title "Error" }}
-            {{ block "errorTemplate" . }}{{ end }}
+            {{ block "contentIndex" . }}{{ end }}  
+        {{ else if eq .data.Title "Login" }}
+            {{ block "LoginTemplate" . }}{{ end }}         
         {{ else if eq .data.Title "Create Video" }}
             {{ block "createVideoTemplate" . }}{{ end }}
-        {{ else if eq .data.Title "Login" }}
-            {{ block "LoginTemplate" . }}{{ end }}
+        {{ else if eq .data.Title "Video" }}
+            {{ block "videoTemplate" . }}{{ end }}
+        {{ else if eq .data.Title "Error" }}
+                {{ block "errorTemplate" . }}{{ end }}       
         {{ else }}
-            <h2>Page not found</h2>
-            <p>The page you are looking for does not exist.</p>
+            <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+                <h2 class="text-4xl font-bold text-red-600 mb-4">Page not found</h2>
+                <p class="text-lg text-gray-700">The page you are looking for does not exist.</p>
+            </div>
         {{ end }}
     </main>
 
     <footer>
-        <p>Footer content here</p>
+        <!-- <p>Footer content here</p> -->
     </footer>
    
-    
 </body>
 
 </html>
