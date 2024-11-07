@@ -20,7 +20,8 @@ func AuthMiddleware(c *gin.Context) {
 	tokenString, err := c.Cookie("token")
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization token missing"})
+		c.Abort()
 		return
 	}
 
@@ -32,7 +33,10 @@ func AuthMiddleware(c *gin.Context) {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Token parsing error: %v\n", err) // Avoid fatal errors that stop the server
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization token"})
+		c.Abort()
+		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
@@ -40,11 +44,20 @@ func AuthMiddleware(c *gin.Context) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 
-		var user models.User
-		dbConnector.DB.First(&user, claims["sub"])
+		userID, ok := claims["sub"].(float64)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token payload"})
+			c.Abort()
+			return
+		}
 
-		if user.ID == 0 {
-			c.AbortWithStatus(http.StatusUnauthorized)
+		var user models.User
+
+		if err := dbConnector.DB.First(&user, uint(userID)).Error; err != nil {
+			log.Printf("User retrieval error: %v\n", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+			c.Abort()
+			return
 		}
 
 		c.Set("user", user)

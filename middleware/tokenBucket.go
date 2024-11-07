@@ -6,11 +6,11 @@ import (
 )
 
 type TokenBucket struct {
-	capacity     int       // Max tokens in the bucket
-	tokens       int       // Current tokens
-	refillRate   time.Duration // Interval to refill 1 token
-	lastRefill   time.Time // Last refill timestamp
-	mu           sync.Mutex
+	capacity   int           // Max tokens in the bucket
+	tokens     int           // Current tokens
+	refillRate time.Duration // Interval to refill 1 token
+	lastRefill time.Time     // Last refill timestamp
+	mu         sync.Mutex
 }
 
 func NewTokenBucket(capacity int, refillRate time.Duration) *TokenBucket {
