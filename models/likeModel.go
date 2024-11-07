@@ -5,9 +5,9 @@ import (
 )
 
 type Likes struct {
+	VideoId string    `json:"videoId" gorm:"uniqueIndex:idx_video_user"`
+	UserId  string    `json:"userId" gorm:"uniqueIndex:idx_video_user"`
 	Video   Video     `json:"video" gorm:"foreignkey:VideoId"`
-	VideoId string    `json:"videoId"`
 	User    User      `json:"user" gorm:"foreignkey:UserId"`
-	UserId  string    `json:"userId"`
 	LikedAt time.Time `json:"timeStamp"`
 }
