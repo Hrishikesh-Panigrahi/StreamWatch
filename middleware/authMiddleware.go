@@ -63,7 +63,8 @@ func AuthMiddleware(c *gin.Context) {
 		c.Set("user", user)
 		c.Next()
 	} else {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
+		c.Abort()
 	}
 
 }
