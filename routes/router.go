@@ -17,8 +17,8 @@ func Routes(superRoute *gin.RouterGroup) {
 
 	superRoute.GET("/logout", controller.LogoutHandler())
 
-	superRoute.POST("create/video", middleware.AuthMiddleware, controller.CreateVideoHandler())
-	superRoute.GET("create/video", middleware.AuthMiddleware,controller.CreateVideoPageHandler())
+	superRoute.POST("create/video", middleware.AuthMiddleware, middleware.RateLimitMiddleware(), controller.CreateVideoHandler())
+	superRoute.GET("create/video", middleware.AuthMiddleware, controller.CreateVideoPageHandler())
 
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())
