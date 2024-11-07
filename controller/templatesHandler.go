@@ -42,9 +42,10 @@ func VideoPageHandler() gin.HandlerFunc {
 		var video models.Video
 
 		type Data struct {
-			Title   string
-			Message string
-			Video   models.Video
+			Title     string
+			Message   string
+			Video     models.Video
+			LikeCount int64
 		}
 
 		if VideoUUID == "" {
@@ -67,8 +68,15 @@ func VideoPageHandler() gin.HandlerFunc {
 			return
 		}
 
+		var likeCount int64
+		if err := dbConnector.DB.Model(&models.Likes{}).Where("video_id = ?", video.ID).Count(&likeCount).Error; err != nil {
+			fmt.Printf("Error retrieving like count: %v\n", err)
+			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the like count. Please try again later.")
+			return
+		}
+
 		fmt.Println(video.Name)
-		data := Data{Title: "Video", Message: "this is index", Video: video}
+		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}

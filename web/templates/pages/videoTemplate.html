@@ -24,6 +24,19 @@
             </div>
             <button class="control-btn" id="fullscreenBtn">⛶</button>
         </div>
+        <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+            <!-- Video Title -->
+            <h2 class="text-2xl font-semibold mb-2">{{ .data.Video.Name }}</h2>
+            
+            <!-- Video Description -->
+            <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
+            
+            <!-- Likes Display -->
+            <div class="flex items-center gap-2 text-gray-400">
+                <span>👍</span>
+                <span id="likeCount">{{ .data.LikeCount }}</span> Likes
+            </div>
+        </div>
     </div>
 </div>
 <script src="../../static/js/script.js"></script>
