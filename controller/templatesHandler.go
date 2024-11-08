@@ -96,7 +96,13 @@ func LoginPageHandler() gin.HandlerFunc {
 
 func RegisterPageHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		render.RenderHtml(c, http.StatusOK, "base.html", nil)
+		type Data struct {
+			Title   string
+			Message string
+		}
+
+		data := Data{Title: "register", Message: "this is registration page"}
+		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
 

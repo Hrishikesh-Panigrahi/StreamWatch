@@ -11,3 +11,9 @@ type Likes struct {
 	User    User      `json:"user" gorm:"foreignkey:UserId"`
 	LikedAt time.Time `json:"timeStamp"`
 }
+
+func GetCurrentTime() time.Time {
+
+	return time.Now()
+
+}

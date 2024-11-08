@@ -13,8 +13,10 @@ import (
 func LikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
+		fmt.Println(VideoUUID)
 
 		cookieuser, exists := c.Get("user")
+		fmt.Println(cookieuser)
 
 		if !exists {
 			render.RenderError(c, http.StatusUnauthorized, "User not logged in. Please login to like the video.")
@@ -42,6 +44,7 @@ func LikeHandler() gin.HandlerFunc {
 		like := models.Likes{
 			VideoId: video.ID,
 			UserId:  user.ID,
+			LikedAt: models.GetCurrentTime(),
 		}
 
 		if err := dbConnector.DB.Create(&like).Error; err != nil {
@@ -65,13 +68,14 @@ func GetLikeHandler() gin.HandlerFunc {
 			return
 		}
 
-		var likes []models.Likes
-		if err := dbConnector.DB.Where("video_id = ?", video.ID).Find(&likes).Error; err != nil {
-			fmt.Printf("Error retrieving Likes: %v\n", err)
-
-			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the likes. Please try again later.")
+		var likeCount int64
+		if err := dbConnector.DB.Model(&models.Likes{}).Where("video_id = ?", video.ID).Count(&likeCount).Error; err != nil {
+			fmt.Printf("Error retrieving like count: %v\n", err)
+			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the like count. Please try again later.")
 			return
 		}
+
+		c.String(http.StatusOK, "%d", likeCount)
 
 	}
 }

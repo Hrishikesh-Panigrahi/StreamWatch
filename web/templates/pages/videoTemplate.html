@@ -4,7 +4,9 @@
 <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
 
 <!-- HTMX -->
-<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/htmx.org@2.0.3"
+    integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"
+    crossorigin="anonymous"></script>
 <!-- <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.min.js"></script> -->
 
 <div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
@@ -30,14 +32,16 @@
         <div class="mt-6 p-4 bg-gray-700 rounded-lg">
             <!-- Video Title -->
             <h2 class="text-2xl font-semibold mb-2">{{ .data.Video.Name }}</h2>
-            
+
             <!-- Video Description -->
             <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
-            
+
             <!-- Likes Display -->
             <div class="flex items-center gap-2 text-gray-400">
-                <span>👍</span>
-                <span id="likeCount">{{ .data.LikeCount }}</span> Likes
+                <span id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
+                    hx-trigger="click">👍</span>
+                <span id="likeCount" hx-get="/video/{{ .data.Video.UUID }}/getlike" hx-target="#likeCount"
+                    hx-trigger="load" hx-swap="outerHTML">0</span>
             </div>
         </div>
     </div>
