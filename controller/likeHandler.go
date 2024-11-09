@@ -41,6 +41,17 @@ func LikeHandler() gin.HandlerFunc {
 			return
 		}
 
+		var Checklike models.Likes
+		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&Checklike).Error; err == nil {
+			fmt.Printf("User already liked the video: %v\n", err)
+			if err := dbConnector.DB.Unscoped().Delete(&Checklike).Error; err != nil {
+				fmt.Printf("Error deleting like: %v\n", err)
+				render.RenderError(c, http.StatusInternalServerError, "Failed to delete the like for the videoid. Please try again later.")
+				return
+			}
+			return
+		}
+
 		like := models.Likes{
 			VideoId: video.ID,
 			UserId:  user.ID,

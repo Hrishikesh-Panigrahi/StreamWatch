@@ -39,9 +39,9 @@
             <!-- Likes Display -->
             <div class="flex items-center gap-2 text-gray-400">
                 <span id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
-                    hx-trigger="click">👍</span>
+                    hx-trigger="click" hx-swap="none">👍</span>
                 <span id="likeCount" hx-get="/video/{{ .data.Video.UUID }}/getlike" hx-target="#likeCount"
-                    hx-trigger="load" hx-swap="outerHTML">0</span>
+                    hx-trigger="load every 10s" hx-swap="outerHTML">0</span>
             </div>
         </div>
     </div>
