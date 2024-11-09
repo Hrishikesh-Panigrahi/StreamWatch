@@ -20,8 +20,10 @@ func Routes(superRoute *gin.RouterGroup) {
 	superRoute.POST("create/video", middleware.AuthMiddleware, middleware.RateLimitMiddleware(), controller.CreateVideoHandler())
 	superRoute.GET("create/video", middleware.AuthMiddleware, middleware.EmailVerification(), controller.CreateVideoPageHandler())
 
-	superRoute.POST("/video/:UUID/like", middleware.AuthMiddleware, controller.LikeHandler())
+	superRoute.POST("/video/:UUID/like", middleware.AuthMiddleware, middleware.RateLimitMiddleware(), controller.LikeHandler())
 	superRoute.GET("/video/:UUID/getlike", controller.GetLikeHandler())
+
+	superRoute.POST("/video/:UUID/watchlog", middleware.AuthMiddleware, controller.WatchLogHandler())
 
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())
