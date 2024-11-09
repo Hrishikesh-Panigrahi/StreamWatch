@@ -41,8 +41,9 @@
         </div>
     </div>
 
-    <input hx-post="/video/{{ .data.Video.UUID }}/watchlog" hx-include="#watchDuration"
-        hx-trigger="unload,changed ,every 10s" hx-swap="none" hx-vals='js:{
+    <div class="hidden" id="UUID">{{ .data.Video.UUID }}</div>
+
+    <input hx-post="/video/{{ .data.Video.UUID }}/watchlog" hx-trigger="submit" hx-swap="none" hx-vals='js:{
         "duration": accumulatedTime,
     }' type="hidden" id="watchDuration" name="duration" value="0">
 
@@ -55,6 +56,14 @@
 <script>
     var player = videojs('video');
     player.play();
+</script>
+
+<script>
+    htmx.onbeforeunload = function (evt) {
+        evt.preventDefault();
+        alert("beforeunload");
+
+    };
 </script>
 
 {{end}}

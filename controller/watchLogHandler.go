@@ -21,7 +21,7 @@ func WatchLogHandler() gin.HandlerFunc {
 		durationStr := c.PostForm("duration")
 
 		fmt.Println("Duration: ", durationStr)
-		
+
 		duration, err := strconv.ParseFloat(durationStr, 64)
 		if err != nil {
 			render.RenderError(c, http.StatusBadRequest, "Invalid watch duration.")
@@ -42,19 +42,28 @@ func WatchLogHandler() gin.HandlerFunc {
 			return
 		}
 
-		// // Log the watch duration
-		// watchLog := models.WatchLog{
-		// 	VideoId:        video.ID,
-		// 	UserId:         user.(models.User).ID,
-		// 	Watch_duration: time.Duration(duration) * time.Second, // Store in seconds
-		// }
-		// if err := dbConnector.DB.Create(&watchLog).Error; err != nil {
-		// 	render.RenderError(c, http.StatusInternalServerError, "Failed to log watch duration.")
-		// 	return
-		// }
+		var watchlog models.WatchLog
+		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.(models.User).ID).First(&watchlog)
 
-		fmt.Println("Watch duration: ", time.Duration(duration)*time.Second)
-		fmt.Println("User: ", user.(models.User).ID)
+		if result.Error == nil {
+			fmt.Println("user has watched some part of the video. Updating the watch duration.")
+			watchlog.Watch_duration = time.Duration(duration) * time.Second
+			if err := dbConnector.DB.Save(&watchlog).Error; err != nil {
+				render.RenderError(c, http.StatusInternalServerError, "Failed to update watch duration.")
+				return
+			}
+		} else {
+			fmt.Println("user has not watched the video. Creating a new watch log.")
+			newWatchLog := models.WatchLog{
+				VideoId:        video.ID,
+				UserId:         user.(models.User).ID,
+				Watch_duration: time.Duration(duration) * time.Second, // Store in seconds
+			}
+			if err := dbConnector.DB.Create(&newWatchLog).Error; err != nil {
+				render.RenderError(c, http.StatusInternalServerError, "Failed to log watch duration.")
+				return
+			}
+		}
 
 		c.Status(http.StatusOK)
 	}

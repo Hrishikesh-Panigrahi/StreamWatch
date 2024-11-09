@@ -46,6 +46,7 @@ func VideoPageHandler() gin.HandlerFunc {
 			Message   string
 			Video     models.Video
 			LikeCount int64
+			WatchLog  models.WatchLog
 		}
 
 		if VideoUUID == "" {
@@ -75,8 +76,14 @@ func VideoPageHandler() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println(video.Name)
-		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount}
+		var watchlog models.WatchLog
+		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, 1).First(&watchlog).Error; err != nil {
+			fmt.Printf("Error retrieving watch log: %v\n", err)
+			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the watch log. Please try again later.")
+			return
+		}
+
+		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, WatchLog: watchlog}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
