@@ -55,7 +55,6 @@ func LikeHandler() gin.HandlerFunc {
 		like := models.Likes{
 			VideoId: video.ID,
 			UserId:  user.ID,
-			LikedAt: models.GetCurrentTime(),
 		}
 
 		if err := dbConnector.DB.Create(&like).Error; err != nil {
@@ -63,7 +62,6 @@ func LikeHandler() gin.HandlerFunc {
 			render.RenderError(c, http.StatusInternalServerError, "Failed to like the video. Please try again later.")
 			return
 		}
-
 	}
 }
 
@@ -87,6 +85,5 @@ func GetLikeHandler() gin.HandlerFunc {
 		}
 
 		c.String(http.StatusOK, "%d", likeCount)
-
 	}
 }

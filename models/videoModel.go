@@ -12,6 +12,11 @@ type Video struct {
 	OriginalVideoPath string `json:"original_video_path" gorm:"type:varchar(100);not null"`
 }
 
+// func (v *Video) BeforeCreate() (err error) {
+// 	v.UUID = uuid.New().String()
+// 	return
+// }
+
 // func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
 // 	videoPath := v.Path
 // 	videoPath = videoPath[:len(videoPath)-10]

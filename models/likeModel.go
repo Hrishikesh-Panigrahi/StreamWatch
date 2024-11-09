@@ -13,7 +13,15 @@ type Likes struct {
 }
 
 func GetCurrentTime() time.Time {
-
 	return time.Now()
+}
 
+func (l *Likes) BeforeCreate() (err error) {
+	l.LikedAt = GetCurrentTime()
+	return
+}
+
+func (l *Likes) BeforeUpdate() (err error) {
+	l.LikedAt = GetCurrentTime()
+	return
 }

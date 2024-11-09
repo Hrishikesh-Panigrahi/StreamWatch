@@ -17,3 +17,19 @@ type User struct {
 	CreatedAt   time.Time    `json:"created_at" gorm:"type:timestamp"`
 	UpdatedAt   time.Time    `json:"updated_at" gorm:"type:timestamp"`
 }
+
+func (u *User) BeforeCreate() (err error) {
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
+	return
+}
+
+func (u *User) BeforeUpdate() (err error) {
+	u.UpdatedAt = time.Now()
+	return
+}
+
+func (u *User) BeforeDelete() (err error) {
+	u.UpdatedAt = time.Now()
+	return
+}
