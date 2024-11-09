@@ -7,23 +7,15 @@ import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func LikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
-		fmt.Println(VideoUUID)
 
-		cookieuser, exists := c.Get("user")
-		fmt.Println(cookieuser)
-
-		if !exists {
-			render.RenderError(c, http.StatusUnauthorized, "User not logged in. Please login to like the video.")
-			return
-		}
-
-		userID := cookieuser.(models.User).ID
+		userID := utils.LoadUserFromCache(c)
 
 		var user models.User
 		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
@@ -33,13 +25,7 @@ func LikeHandler() gin.HandlerFunc {
 			return
 		}
 
-		var video models.Video
-		if err := dbConnector.DB.Where("uuid = ?", VideoUUID).First(&video).Error; err != nil {
-			fmt.Printf("Error retrieving Video: %v\n", err)
-
-			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the video. Please try again later.")
-			return
-		}
+		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
 
 		var like models.Likes
 		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, userID).First(&like)
@@ -68,14 +54,7 @@ func LikeHandler() gin.HandlerFunc {
 func GetLikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
-
-		var video models.Video
-		if err := dbConnector.DB.Where("uuid = ?", VideoUUID).First(&video).Error; err != nil {
-			fmt.Printf("Error retrieving Video: %v\n", err)
-
-			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the video. Please try again later.")
-			return
-		}
+		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
 
 		var likeCount int64
 		if err := dbConnector.DB.Model(&models.Likes{}).Where("video_id = ?", video.ID).Count(&likeCount).Error; err != nil {

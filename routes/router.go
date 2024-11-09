@@ -24,6 +24,7 @@ func Routes(superRoute *gin.RouterGroup) {
 	superRoute.GET("/video/:UUID/getlike", controller.GetLikeHandler())
 
 	superRoute.POST("/video/:UUID/watchlog", middleware.AuthMiddleware, controller.WatchLogHandler())
+	superRoute.GET("/video/:UUID/getwatchlog", controller.GetWatchLogHandler())
 
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())

@@ -10,6 +10,7 @@ import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/utils"
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
@@ -39,21 +40,11 @@ func CreateVideoHandler() gin.HandlerFunc {
 
 		UUIDid := uuid.New()
 
-		cookieuser, exists := c.Get("user")
-
-		if !exists {
-			render.RenderError(c, http.StatusUnauthorized, "User not logged in. Please login to upload video.")
-			return
-		}
-
-		userID := cookieuser.(models.User).ID
-
-		fmt.Println(userID)
+		userID := utils.LoadUserFromCache(c)
 
 		var user models.User
 		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
 			fmt.Printf("Error retrieving User: %v\n", err)
-
 			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the user. Please try again later.")
 			return
 		}

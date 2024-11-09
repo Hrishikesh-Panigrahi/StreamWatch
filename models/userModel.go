@@ -33,3 +33,5 @@ func (u *User) BeforeDelete() (err error) {
 	u.UpdatedAt = time.Now()
 	return
 }
+
+

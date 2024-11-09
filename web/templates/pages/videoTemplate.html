@@ -9,6 +9,13 @@
 
 <div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
     <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
+        
+        <!-- <div id="getwatchLog" class="hidden"
+        hx-get="/video/{{ .data.Video.UUID }}/watchlog" 
+        hx-target="#getwatchLog"
+        hx-trigger="load every 10s" 
+        hx-swap="outerHTML"></div> -->
+
         <video id="video" class="w-full h-full rounded-lg" preload="auto"
             poster="https://via.placeholder.com/400x225.png?text=Video+Loading..." class="video-js vjs-default-skin">
             <source
@@ -33,22 +40,33 @@
             <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
             <p class="text-gray-300 mb-4">Uploaded by: {{ .data.Video.User.Name }}</p>
             <div class="flex items-center gap-2 text-gray-400">
-                <span id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
-                    hx-trigger="click" hx-swap="none">👍</span>
-                <span id="likeCount" hx-get="/video/{{ .data.Video.UUID }}/getlike" hx-target="#likeCount"
-                    hx-trigger="load every 10s" hx-swap="outerHTML">0</span>
+                <span id="send-like" 
+                    hx-post="/video/{{ .data.Video.UUID }}/like" 
+                    hx-target="#send-like"
+                    hx-trigger="click" 
+                    hx-swap="none">👍
+                </span>
+                <span id="likeCount" 
+                    hx-get="/video/{{ .data.Video.UUID }}/getlike" 
+                    hx-target="#likeCount"
+                    hx-trigger="load every 10s" 
+                    hx-swap="outerHTML">0
+                </span>
             </div>
         </div>
     </div>
 
-    <div class="hidden" id="UUID">{{ .data.Video.UUID }}</div>
-
-    <input hx-post="/video/{{ .data.Video.UUID }}/watchlog" hx-trigger="submit" hx-swap="none" hx-vals='js:{
-        "duration": accumulatedTime,
-    }' type="hidden" id="watchDuration" name="duration" value="0">
-
+    <input 
+        hx-post="/video/{{ .data.Video.UUID }}/watchlog" 
+        hx-trigger="submit" 
+        hx-swap="none" 
+        hx-vals='js:{
+            "duration": accumulatedTime,
+        }' 
+    type="hidden" id="watchDuration" name="duration" value="0">
 
 </div>
+
 <script src="../../static/js/script.js"></script>
 <script src="../../static/js/watchLog.js"></script>
 
@@ -56,14 +74,6 @@
 <script>
     var player = videojs('video');
     player.play();
-</script>
-
-<script>
-    htmx.onbeforeunload = function (evt) {
-        evt.preventDefault();
-        alert("beforeunload");
-
-    };
 </script>
 
 {{end}}

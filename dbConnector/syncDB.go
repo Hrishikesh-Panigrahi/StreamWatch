@@ -14,7 +14,7 @@ func SyncDB() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	err = DB.AutoMigrate(&models.User{}, &models.Video{}, &models.Likes{})
+	err = DB.AutoMigrate(&models.User{}, &models.Video{}, &models.Likes{}, &models.WatchLog{})
 	if err != nil {
 		log.Fatal("Error migrating the database")
 	}

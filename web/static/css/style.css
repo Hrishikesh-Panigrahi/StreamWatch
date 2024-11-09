@@ -54,7 +54,6 @@
 
 .resolution-dropdown-container {
     display: flex;
-    /* align-items: center; */
     margin-right: 8px;
 }
 
@@ -65,7 +64,6 @@
     font-size: 1rem;
     appearance: none;
     cursor: pointer;
-   
 }
 
 .resolution-dropdown option {
