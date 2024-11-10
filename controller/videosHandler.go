@@ -1,11 +1,9 @@
 package controller
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 	"os"
-	"os/exec"
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
@@ -37,6 +35,20 @@ func AddVideo() gin.HandlerFunc {
 
 func CreateVideoHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		form, _ := c.MultipartForm()
+		files := form.File["videoFile"]
+
+		if len(files) > 1 {
+			fmt.Println("Multiple files uploaded")
+			// for _, file := range files {
+			// 	log.Println(file.Filename)
+
+			// 	// Upload the file to specific dst.
+			// 	c.SaveUploadedFile(file, dst)
+			// }
+			return
+		}
 
 		UUIDid := uuid.New()
 
@@ -78,7 +90,6 @@ func CreateVideoHandler() gin.HandlerFunc {
 			filename = filename[:50]
 		}
 
-		// Construct folder path (optionally, add UUID or timestamp)
 		folderName := fmt.Sprintf("%s_%s_%s", name, user.Name, UUIDid.String())
 		folderPath := "./tempVideos/" + folderName
 		if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
@@ -93,20 +104,9 @@ func CreateVideoHandler() gin.HandlerFunc {
 		}
 
 		masterPlaylist := folderPath + "/master.m3u8"
-		cmd := exec.Command("ffmpeg", "-i", originalVideoPath,
-			// HLS output options
-			"-f", "hls", "-hls_time", "4", "-hls_playlist_type", "vod",
-			"-hls_segment_filename", folderPath+"/segment_%03d.ts",
-			folderPath+"/master.m3u8",
-		)
+		GenerateMasterPlaylistErr := utils.GenerateMasterPlaylist(c, folderPath, originalVideoPath)
 
-		var stderrOutput bytes.Buffer
-		cmd.Stderr = &stderrOutput
-
-		// Run FFmpeg command
-		if err := cmd.Run(); err != nil {
-			fmt.Println("Error running FFmpeg command: ", err)
-			fmt.Println("FFmpeg stderr: ", stderrOutput.String())
+		if GenerateMasterPlaylistErr != nil {
 			render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
 			return
 		}
