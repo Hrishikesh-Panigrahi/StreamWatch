@@ -10,11 +10,11 @@
 <div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
     <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
         
-        <!-- <div id="getwatchLog" class="hidden"
-        hx-get="/video/{{ .data.Video.UUID }}/watchlog" 
-        hx-target="#getwatchLog"
-        hx-trigger="load every 10s" 
-        hx-swap="outerHTML"></div> -->
+        <div id="duration" class="hidden"
+        hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" 
+        hx-target="#duration"
+        hx-trigger="load" 
+        hx-swap="outerHTML"></div>
 
         <video id="video" class="w-full h-full rounded-lg" preload="auto"
             poster="https://via.placeholder.com/400x225.png?text=Video+Loading..." class="video-js vjs-default-skin">

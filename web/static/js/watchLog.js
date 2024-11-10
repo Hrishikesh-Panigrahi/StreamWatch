@@ -1,5 +1,5 @@
 const watchDurationInput = document.getElementById("watchDuration");
-const getwatchLog = document.getElementById("getwatchLog");
+const getwatchLog = document.getElementById("duration");
 
 let watchStartTime;
 let accumulatedTime = 0;
@@ -24,4 +24,4 @@ video.addEventListener("pause", stopTimer);
 video.addEventListener("ended", stopTimer);
 window.addEventListener("beforeunload", stopTimer);
 
-console.log("the watchlog is....", getwatchLog);
+console.log("the watchlog is....", getwatchLog.innerHTML);

@@ -71,11 +71,13 @@ func GetWatchLogHandler() gin.HandlerFunc {
 		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, userID).First(&watchlog)
 
 		if result.Error != nil {
-			render.RenderError(c, http.StatusNotFound, "Watch log not found.")
+			// render.RenderError(c, http.StatusNotFound, "Watch log not found.")
 			return
 		}
 
-		fmt.Println("Watch Duration: ", watchlog.Watch_duration)
-		c.String(http.StatusOK, "%v", watchlog.Watch_duration)
+		duration := watchlog.Watch_duration
+
+		fmt.Println("Watch Duration: ", duration)
+		c.String(http.StatusOK, "%v", duration)
 	}
 }
