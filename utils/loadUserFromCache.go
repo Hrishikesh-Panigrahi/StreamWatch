@@ -17,3 +17,13 @@ func LoadUserFromCache(c *gin.Context) uint {
 
 	return user.(models.User).ID
 }
+
+func GetUserFromCache(c *gin.Context) models.User {
+	user, exists := c.Get("user")
+	if !exists {
+		render.RenderError(c, http.StatusUnauthorized, "User not logged in.")
+		return models.User{}
+	}
+
+	return user.(models.User)
+}

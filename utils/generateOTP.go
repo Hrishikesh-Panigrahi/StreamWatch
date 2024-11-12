@@ -3,7 +3,6 @@ package utils
 import (
 	"crypto/rand"
 	"fmt"
-	"math"
 	"math/big"
 )
 
@@ -12,7 +11,7 @@ func GenerateOTP(maxDigits uint32) (string, error) {
 		return "", fmt.Errorf("maxDigits must be greater than 0")
 	}
 
-	upperLimit := big.NewInt(int64(math.Pow(10, float64(maxDigits))))
+	upperLimit := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(maxDigits)), nil)
 
 	bi, err := rand.Int(rand.Reader, upperLimit)
 	if err != nil {

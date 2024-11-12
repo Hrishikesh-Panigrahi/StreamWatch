@@ -15,23 +15,15 @@ func LikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
 
-		userID := utils.LoadUserFromCache(c)
-
-		var user models.User
-		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
-			fmt.Printf("Error retrieving User: %v\n", err)
-
-			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the user. Please try again later.")
-			return
-		}
+		user := utils.GetUserFromCache(c)
 
 		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
 
 		var like models.Likes
-		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, userID).First(&like)
+		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&like)
 		if result.Error == nil {
 			fmt.Println("User already liked the video. Deleting the like.")
-			if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, userID).Delete(&like).Error; err != nil {
+			if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, user.ID).Delete(&like).Error; err != nil {
 				fmt.Printf("Error deleting like: %v\n", err)
 				render.RenderError(c, http.StatusInternalServerError, "Failed to delete the like for the video. Please try again later.")
 				return
@@ -39,7 +31,7 @@ func LikeHandler() gin.HandlerFunc {
 		} else {
 			newLike := models.Likes{
 				VideoId: video.ID,
-				UserId:  userID,
+				UserId:  user.ID,
 				LikedAt: models.GetCurrentTime(),
 			}
 			if err := dbConnector.DB.Create(&newLike).Error; err != nil {

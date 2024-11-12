@@ -52,14 +52,7 @@ func CreateVideoHandler() gin.HandlerFunc {
 
 		UUIDid := uuid.New()
 
-		userID := utils.LoadUserFromCache(c)
-
-		var user models.User
-		if err := dbConnector.DB.First(&user, userID).Error; err != nil {
-			fmt.Printf("Error retrieving User: %v\n", err)
-			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the user. Please try again later.")
-			return
-		}
+		user := utils.GetUserFromCache(c)
 
 		file, fileHeader, err := c.Request.FormFile("videoFile")
 		if err != nil {
@@ -112,7 +105,7 @@ func CreateVideoHandler() gin.HandlerFunc {
 		}
 
 		video := models.Video{
-			UserID:            uint(userID),
+			UserID:            user.ID,
 			UUID:              UUIDid.String(),
 			Name:              filename,
 			Tags:              tags,
