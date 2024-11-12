@@ -7,69 +7,80 @@
     integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"
     crossorigin="anonymous"></script>
 
-<div class="bg-gray-900 text-white flex items-center justify-center min-h-screen dark-transition">
-    <div class="bg-gray-800 rounded-lg shadow-lg p-4 player-container" id="player-container">
-        
-        <div id="duration" class="hidden"
-        hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" 
-        hx-target="#duration"
-        hx-trigger="load" 
-        hx-swap="outerHTML"></div>
+<section class="bg-black p-10">
 
-        <video id="video" class="w-full h-full rounded-lg" preload="auto"
-            poster="https://via.placeholder.com/400x225.png?text=Video+Loading..." class="video-js vjs-default-skin">
-            <source
-                src="tempVideos/{{ .data.Video.Name }}_{{ .data.Video.User.Name }}_{{ .data.Video.UUID }}/master.m3u8"
-                type="application/x-mpegURL" />
-            Your browser does not support the video tag.
-        </video>
-        <div class="custom-controls" id="controls">
-            <button class="control-btn" id="playBtn">⏵</button>
-            <div class="resolution-dropdown-container">
-                <select id="resolutionDropdown" class="resolution-dropdown">
-                    <option value="1080p">1080p</option>
-                    <option value="720p">720p</option>
-                    <option value="480p">480p</option>
-                </select>
+    <div id="duration" class="hidden" hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" hx-target="#duration"
+        hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <div id="container" class="w-4/5 h-4/5 mx-auto rounded-lg overflow-hidden relative group">
+        <!-- VIDEO -->
+        <figure>
+            <video id="video" class="w-full" class="video-js vjs-default-skin">
+                <source
+                    src="tempVideos/{{ .data.Video.Name }}_{{ .data.Video.User.Name }}_{{ .data.Video.UUID }}/master.m3u8"
+                    type="application/x-mpegURL" />
+            </video>
+        </figure>
+
+        <!-- CONTROLS -->
+        <div id="controls"
+            class="opacity-0 p-5 absolute bottom-0 left-0 w-full transition-opacity duration-300 ease-linear group-hover:opacity-100">
+            <!-- PROGRESS BAR -->
+            <div id="progress-bar" class="h-1 w-full bg-white cursor-pointer mb-4">
+                <div id="progress-indicator" class="h-full w-0 bg-indigo-800 transition-all duration-500 ease-in-out">
+                </div>
             </div>
-            <button class="control-btn" id="fullscreenBtn">⛶</button>
-        </div>
-        <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between">
+                    <!-- REWIND BUTTON -->
+                    <button id="rewind" class="transition-all duration-100 ease-linear hover:scale-125">
+                        <i class="material-icons text-white text-3xl w-12">replay_10 </i>
+                    </button>
 
-            <h2 class="text-2xl font-semibold mb-2">{{ .data.Video.Name }}</h2>
-            <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
-            <p class="text-gray-300 mb-4">Uploaded by: {{ .data.Video.User.Name }}</p>
-            <div class="flex items-center gap-2 text-gray-400">
-                <span id="send-like" 
-                    hx-post="/video/{{ .data.Video.UUID }}/like" 
-                    hx-target="#send-like"
-                    hx-trigger="click" 
-                    hx-swap="none">👍
-                </span>
-                <span id="likeCount" 
-                    hx-get="/video/{{ .data.Video.UUID }}/getlike" 
-                    hx-target="#likeCount"
-                    hx-trigger="load every 10s" 
-                    hx-swap="outerHTML">0
-                </span>
+                    <!-- PLAY BUTTON -->
+                    <button id="play-pause" class="transition-all duration-100 ease-linear hover:scale-125">
+                        <i class="material-icons text-white text-5xl inline-block w-12">play_arrow</i>
+                    </button>
+
+                    <!-- FAST FORWARD BUTTON -->
+                    <button id="fast-forward" class="transition-all duration-100 ease-linear hover:scale-125">
+                        <i class="material-icons text-white text-3xl w-12">forward_10 </i>
+                    </button>
+                </div>
+
+                <div>
+                    <!-- VOLUME BUTTON -->
+                    <button id="volume" class="transition-all duration-100 ease-linear hover:scale-125">
+                        <i class="material-icons text-white text-3xl">volume_up</i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <input 
-        hx-post="/video/{{ .data.Video.UUID }}/watchlog" 
-        hx-trigger="submit" 
-        hx-swap="none" 
-        hx-vals='js:{
+    <div class="mt-6 p-4 bg-black ">
+        <h2 class="text-2xl font-semibold mb-2">{{ .data.Video.Name }}</h2>
+        <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
+        <p class="text-gray-300 mb-4">Uploaded by: {{ .data.Video.User.Name }}</p>
+        <div class="flex items-center gap-2 text-gray-400">
+            <span id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like" hx-trigger="click"
+                hx-swap="none">👍
+            </span>
+            <span id="likeCount" hx-get="/video/{{ .data.Video.UUID }}/getlike" hx-target="#likeCount"
+                hx-trigger="load every 10s" hx-swap="outerHTML">0
+            </span>
+        </div>
+    </div>
+</section>
+
+<input hx-post="/video/{{ .data.Video.UUID }}/watchlog" hx-trigger="submit" hx-swap="none" hx-vals='js:{
             "duration": accumulatedTime,
-        }' 
-    type="hidden" id="watchDuration" name="duration" value="0">
+        }' type="hidden" id="watchDuration" name="duration" value="0">
 
 </div>
 
 <script src="../../static/js/script.js"></script>
 <script src="../../static/js/watchLog.js"></script>
-
 
 <script>
     var player = videojs('video');
