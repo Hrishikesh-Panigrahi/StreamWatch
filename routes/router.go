@@ -23,6 +23,9 @@ func Routes(superRoute *gin.RouterGroup) {
 	superRoute.POST("/video/:UUID/like", middleware.AuthMiddleware, middleware.RateLimitMiddleware(), controller.LikeHandler())
 	superRoute.GET("/video/:UUID/getlike", controller.GetLikeHandler())
 
+	superRoute.POST("/video/:UUID/dislike", middleware.AuthMiddleware, middleware.RateLimitMiddleware(), controller.DislikeHandler())
+	superRoute.GET("/video/:UUID/getdislike", controller.GetDislikeHandler())
+
 	superRoute.POST("/video/:UUID/watchlog", middleware.AuthMiddleware, controller.WatchLogHandler())
 	superRoute.GET("/video/:UUID/getwatchlog", middleware.AuthMiddleware, controller.GetWatchLogHandler())
 

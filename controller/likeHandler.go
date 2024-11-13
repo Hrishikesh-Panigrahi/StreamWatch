@@ -40,7 +40,6 @@ func LikeHandler() gin.HandlerFunc {
 				return
 			}
 
-			
 		}
 
 	}
@@ -59,5 +58,54 @@ func GetLikeHandler() gin.HandlerFunc {
 		}
 
 		c.String(http.StatusOK, "%d", likeCount)
+	}
+}
+
+func DislikeHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		VideoUUID := c.Param("UUID")
+
+		user := utils.GetUserFromCache(c)
+
+		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
+
+		var dislike models.Dislikes
+		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&dislike)
+		if result.Error == nil {
+			fmt.Println("User already disliked the video. Deleting the dislike.")
+			if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, user.ID).Delete(&dislike).Error; err != nil {
+				fmt.Printf("Error deleting dislike: %v\n", err)
+				render.RenderError(c, http.StatusInternalServerError, "Failed to delete the dislike for the video. Please try again later.")
+				return
+			}
+		} else {
+			newDislike := models.Dislikes{
+				VideoId:    video.ID,
+				UserId:     user.ID,
+				DislikedAt: models.GetCurrentTime(),
+			}
+			if err := dbConnector.DB.Create(&newDislike).Error; err != nil {
+				fmt.Printf("Error creating dislike: %v\n", err)
+				render.RenderError(c, http.StatusInternalServerError, "Failed to dislike the video. Please try again later.")
+				return
+			}
+		}
+
+	}
+}
+
+func GetDislikeHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		VideoUUID := c.Param("UUID")
+		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
+
+		var dislikeCount int64
+		if err := dbConnector.DB.Model(&models.Dislikes{}).Where("video_id = ?", video.ID).Count(&dislikeCount).Error; err != nil {
+			fmt.Printf("Error retrieving dislike count: %v\n", err)
+			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the dislike count. Please try again later.")
+			return
+		}
+
+		c.String(http.StatusOK, "%d", dislikeCount)
 	}
 }

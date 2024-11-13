@@ -9,7 +9,7 @@ type Likes struct {
 	UserId  uint      `json:"userId" gorm:"uniqueIndex:idx_video_user"`
 	Video   Video     `json:"video" gorm:"foreignkey:VideoId"`
 	User    User      `json:"user" gorm:"foreignkey:UserId"`
-	LikedAt time.Time `json:"timeStamp"`
+	LikedAt time.Time `json:"Like_timeStamp"`
 }
 
 func GetCurrentTime() time.Time {
