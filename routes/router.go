@@ -29,6 +29,6 @@ func Routes(superRoute *gin.RouterGroup) {
 	// API for video streaming
 	superRoute.GET("/stream/:UUID", controller.StreamHandler())
 	// frontend url -- The request responds to a url matching: /video?UUID=xxxx-xxxx-xxxx-xxxx
-	superRoute.GET("/video", controller.VideoPageHandler())
+	superRoute.GET("/video", middleware.AuthMiddleware, controller.VideoPageHandler())
 
 }

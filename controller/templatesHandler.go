@@ -7,6 +7,7 @@ import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/dbConnector"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/models"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
+	"github.com/Hrishikesh-Panigrahi/StreamWatch/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -46,6 +47,7 @@ func VideoPageHandler() gin.HandlerFunc {
 			Message   string
 			Video     models.Video
 			LikeCount int64
+			LikedBy   bool
 			// WatchLog  models.WatchLog
 		}
 
@@ -76,14 +78,16 @@ func VideoPageHandler() gin.HandlerFunc {
 			return
 		}
 
-		// var watchlog models.WatchLog
-		// if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, 1).First(&watchlog).Error; err != nil {
-		// 	fmt.Printf("Error retrieving watch log: %v\n", err)
-		// 	render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the watch log. Please try again later.")
-		// 	return
-		// }
+		user := utils.GetUserFromCache(c)
+		var userLike models.Likes
+		likedBy := false
+		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&userLike).Error; err == nil {
+			likedBy = true
+		}
 
-		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount}
+		fmt.Println(likedBy)
+
+		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, LikedBy: likedBy}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}

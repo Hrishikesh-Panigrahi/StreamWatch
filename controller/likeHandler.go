@@ -39,7 +39,10 @@ func LikeHandler() gin.HandlerFunc {
 				render.RenderError(c, http.StatusInternalServerError, "Failed to like the video. Please try again later.")
 				return
 			}
+
+			
 		}
+
 	}
 }
 

@@ -27,12 +27,6 @@ func GetVideo() gin.HandlerFunc {
 	}
 }
 
-func AddVideo() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.String(http.StatusOK, "Video is created")
-	}
-}
-
 func CreateVideoHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
