@@ -23,23 +23,9 @@ func LikeHandler() gin.HandlerFunc {
 		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&like)
 		if result.Error == nil {
 			fmt.Println("User already liked the video. Deleting the like.")
-			if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, user.ID).Delete(&like).Error; err != nil {
-				fmt.Printf("Error deleting like: %v\n", err)
-				render.RenderError(c, http.StatusInternalServerError, "Failed to delete the like for the video. Please try again later.")
-				return
-			}
+			utils.DeleteLikeFromDB(c, user, video, like)
 		} else {
-			newLike := models.Likes{
-				VideoId: video.ID,
-				UserId:  user.ID,
-				LikedAt: models.GetCurrentTime(),
-			}
-			if err := dbConnector.DB.Create(&newLike).Error; err != nil {
-				fmt.Printf("Error creating like: %v\n", err)
-				render.RenderError(c, http.StatusInternalServerError, "Failed to like the video. Please try again later.")
-				return
-			}
-
+			utils.AddLike(c, video.ID, user.ID)
 		}
 
 	}
@@ -79,19 +65,8 @@ func DislikeHandler() gin.HandlerFunc {
 				return
 			}
 		} else {
-			fmt.Println("User has disliked the video. Disliking the video.........")
-			var like models.Likes
-			result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&like)
-			if result.Error == nil {
-				fmt.Println("User already liked the video. Deleting the like, as user is disliking the video.")
-				if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, user.ID).Delete(&like).Error; err != nil {
-					fmt.Printf("Error deleting like: %v\n", err)
-					render.RenderError(c, http.StatusInternalServerError, "Failed to delete the like for the video. Please try again later.")
-					return
-				}else{
-					fmt.Println("Deleted the like for the video.")
-				}
-			}
+			utils.RemoveLike(c, user, video)
+
 			newDislike := models.Dislikes{
 				VideoId:    video.ID,
 				UserId:     user.ID,
