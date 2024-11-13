@@ -43,11 +43,12 @@ func VideoPageHandler() gin.HandlerFunc {
 		var video models.Video
 
 		type Data struct {
-			Title     string
-			Message   string
-			Video     models.Video
-			LikeCount int64
-			LikedBy   bool
+			Title      string
+			Message    string
+			Video      models.Video
+			LikeCount  int64
+			LikedBy    bool
+			Dislikedby bool
 			// WatchLog  models.WatchLog
 		}
 
@@ -85,9 +86,13 @@ func VideoPageHandler() gin.HandlerFunc {
 			likedBy = true
 		}
 
-		fmt.Println(likedBy)
+		var userDisike models.Dislikes
+		dislikedBy := false
+		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&userDisike).Error; err == nil {
+			dislikedBy = true
+		}
 
-		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, LikedBy: likedBy}
+		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, LikedBy: likedBy, Dislikedby: dislikedBy}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
