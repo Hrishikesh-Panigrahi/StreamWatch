@@ -84,12 +84,16 @@ func VideoPageHandler() gin.HandlerFunc {
 		likedBy := false
 		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&userLike).Error; err == nil {
 			likedBy = true
+		} else {
+			likedBy = false
 		}
 
 		var userDisike models.Dislikes
 		dislikedBy := false
 		if err := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&userDisike).Error; err == nil {
 			dislikedBy = true
+		} else {
+			dislikedBy = false
 		}
 
 		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, LikedBy: likedBy, Dislikedby: dislikedBy}

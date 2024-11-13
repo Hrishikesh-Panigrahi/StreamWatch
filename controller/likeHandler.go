@@ -14,9 +14,7 @@ import (
 func LikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
-
 		user := utils.GetUserFromCache(c)
-
 		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
 
 		var like models.Likes
@@ -25,9 +23,10 @@ func LikeHandler() gin.HandlerFunc {
 			fmt.Println("User already liked the video. Deleting the like.")
 			utils.DeleteLikeFromDB(c, user, video, like)
 		} else {
+			fmt.Println("User is liking the video.")
+			utils.RemoveDislike(c, user, video)
 			utils.AddLike(c, video.ID, user.ID)
 		}
-
 	}
 }
 
@@ -42,7 +41,6 @@ func GetLikeHandler() gin.HandlerFunc {
 			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the like count. Please try again later.")
 			return
 		}
-
 		c.String(http.StatusOK, "%d", likeCount)
 	}
 }
@@ -50,35 +48,19 @@ func GetLikeHandler() gin.HandlerFunc {
 func DislikeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		VideoUUID := c.Param("UUID")
-
 		user := utils.GetUserFromCache(c)
-
 		video := utils.GetVideoByUUID(c, VideoUUID, "An error occurred while fetching the video. Please try again later.")
 
 		var dislike models.Dislikes
 		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&dislike)
 		if result.Error == nil {
 			fmt.Println("User already disliked the video. Deleting the dislike.")
-			if err := dbConnector.DB.Unscoped().Where("video_id = ? AND user_id = ?", video.ID, user.ID).Delete(&dislike).Error; err != nil {
-				fmt.Printf("Error deleting dislike: %v\n", err)
-				render.RenderError(c, http.StatusInternalServerError, "Failed to delete the dislike for the video. Please try again later.")
-				return
-			}
+			utils.DeleteDislikeFromDB(c, user, video, dislike)
 		} else {
+			fmt.Println("User is disliking the video.")
 			utils.RemoveLike(c, user, video)
-
-			newDislike := models.Dislikes{
-				VideoId:    video.ID,
-				UserId:     user.ID,
-				DislikedAt: models.GetCurrentTime(),
-			}
-			if err := dbConnector.DB.Create(&newDislike).Error; err != nil {
-				fmt.Printf("Error creating dislike: %v\n", err)
-				render.RenderError(c, http.StatusInternalServerError, "Failed to dislike the video. Please try again later.")
-				return
-			}
+			utils.AddDislike(c, video.ID, user.ID)
 		}
-
 	}
 }
 
@@ -93,7 +75,6 @@ func GetDislikeHandler() gin.HandlerFunc {
 			render.RenderError(c, http.StatusInternalServerError, "An error occurred while fetching the dislike count. Please try again later.")
 			return
 		}
-
 		c.String(http.StatusOK, "%d", dislikeCount)
 	}
 }

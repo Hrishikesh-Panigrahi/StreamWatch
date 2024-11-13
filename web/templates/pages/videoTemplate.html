@@ -7,10 +7,10 @@
     integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"
     crossorigin="anonymous"></script>
 
-<section class="bg-black p-10">
+<section class="bg-black p-3">
 
     <input hx-post="/video/{{ .data.Video.UUID }}/watchlog" hx-trigger="submit" hx-swap="none" hx-vals='js:{
-    "duration": accumulatedTime,}' type="hidden" id="watchDuration" name="duration" value="0">
+    "duration": accumulatedTime,}' type="hidden" id="watchDuration" name="duration" value="0" class="hidden">
 
     <div id="duration" class="hidden" hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" hx-target="#duration"
         hx-trigger="load" hx-swap="outerHTML"></div>
@@ -61,14 +61,15 @@
         </div>
     </div>
 
-    <div class="mt-6 p-4 bg-black ">
-        <h2 class="text-2xl font-semibold mb-2">{{ .data.Video.Name }}</h2>
-        <p class="text-gray-300 mb-4">{{ .data.Video.Description }}</p>
-        <p class="text-gray-300 mb-4">Uploaded by: {{ .data.Video.User.Name }}</p>
-        <div class="flex items-center gap-2 text-gray-400">
+    <div class="mt-6 p-4 bg-black rounded-lg shadow-lg flex gap-3 text-white">
+        <div class="flex flex-col">
+            <h2 class="text-white font-semibold text-lg">{{ .data.Video.Name }}</h2>
+            <span class="font-medium text-white">{{ .data.Video.User.Name}}</span>
+        </div>
+        <div class="flex items-center justify-end ml-auto gap-2 text-gray-400 ">
             <button id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
-                hx-trigger="click" hx-swap="outerHTML" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2
-                {{ if .data.LikedBy }} text-green-600 {{ end }}">
+                hx-trigger="click" hx-swap="outerHTML" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2 
+                {{ if .data.LikedBy }} text-green-600 border-green-600 {{ end }}">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -81,7 +82,7 @@
             </button>
             <button id="send-dislike" hx-post="/video/{{ .data.Video.UUID }}/dislike" hx-target="#send-dislike"
                 hx-trigger="click" hx-swap="outerHTML" class="py-1.5 px-3 hover:text-red-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2
-                {{ if .data.Dislikedby }} text-red-600 {{ end }}">
+                {{ if .data.Dislikedby }} text-red-600 border-red-600 {{ end }}">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"

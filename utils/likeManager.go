@@ -24,7 +24,7 @@ func RemoveLike(c *gin.Context, user models.User, video models.Video) {
 	var like models.Likes
 	result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, user.ID).First(&like)
 	if result.Error == nil {
-		fmt.Println("User liked the video. Deleting the like, as user is disliking the video.")
+		fmt.Println("User disliked the video. Deleting the like, as user is disliking the video.")
 		DeleteLikeFromDB(c, user, video, like)
 	}
 }
