@@ -68,7 +68,7 @@
         </div>
         <div class="flex items-center justify-end ml-auto gap-2 text-gray-400 ">
             <button id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
-                hx-trigger="click" hx-swap="outerHTML" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2 
+                hx-trigger="click" hx-swap="none" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2 
                 {{ if .data.LikedBy }} text-green-600 border-green-600 {{ end }}">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor">
@@ -77,7 +77,7 @@
                     </path>
                 </svg>
                 <span id="likeCount" hx-get="/video/{{ .data.Video.UUID }}/getlike" hx-target="#likeCount"
-                    hx-trigger="load every 10s" hx-swap="outerHTML">0
+                    hx-trigger="load, every 5s" hx-swap="innerHTML">0
                 </span>
             </button>
             <button id="send-dislike" hx-post="/video/{{ .data.Video.UUID }}/dislike" hx-target="#send-dislike"
@@ -99,6 +99,8 @@
 
 <script src="../../static/js/script.js"></script>
 <script src="../../static/js/watchLog.js"></script>
+<script src="../../static/js/likeManager.js"></script>
+
 
 <script>
     var player = videojs('video');
