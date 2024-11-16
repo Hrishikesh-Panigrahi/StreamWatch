@@ -2,7 +2,6 @@
 {{ define "contentIndex" }}
 <div class="relative flex min-h-screen flex-col bg-black">
     <div class="min-h-28">
-        <!-- Using grid with two columns -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 mx-4">
             {{ range .data.Videos }}
             <div>
@@ -19,7 +18,7 @@
                     </span>
                     <span class="col-end-7 col-span-2 text-sm text-slate-500 uppercase font-mono flex justify-end">
                         <span class="">
-                            music video
+                            {{ .Tags }}
                         </span>
                     </span>
                 </span>

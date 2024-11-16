@@ -2,8 +2,7 @@
 {{define "createVideoTemplate"}}
 
 <div class="bg-black flex items-center justify-center min-h-screen">
-
-    <div class="w-full max-w-md bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+    <div class="w-full max-w-md bg-black text-white p-8 rounded-lg shadow-lg">
         <h2 class="text-3xl font-semibold text-center mb-6">Upload Video</h2>
         <form action="/create/video" method="POST" enctype="multipart/form-data">
             <div class="mb-4">
@@ -30,7 +29,6 @@
                 class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold text-white">Upload</button>
         </form>
     </div>
-
 </div>
 
 {{end}}

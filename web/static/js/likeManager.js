@@ -7,8 +7,7 @@ like.addEventListener("htmx:afterSwap", function (event) {
   const isLiked =
     likeButton.classList.contains("text-green-600") &&
     likeButton.classList.contains("border-green-600");
-
-  // Log if the button is liked or not
+  
   if (isLiked) {
     likeButton.addEventListener("click", function () {
       console.log("The video is unliked.");
@@ -36,7 +35,6 @@ dislike.addEventListener("htmx:afterSwap", function (event) {
     dislikeButton.classList.contains("text-red-600") &&
     dislikeButton.classList.contains("border-red-600");
 
-  // Log if the button is disliked or not
   if (isDisliked) {
     dislikeButton.addEventListener("click", function () {
       console.log("The video is undisliked.");

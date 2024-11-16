@@ -12,11 +12,11 @@ video.addEventListener("play", () => {
 // Stop the timer when the video pauses or ends, and update accumulated time
 const stopTimer = () => {
   if (watchStartTime) {
-    accumulatedTime += (Date.now() - watchStartTime) / 1000; 
+    accumulatedTime += (Date.now() - watchStartTime) / 1000;
     watchDurationInput.value = accumulatedTime.toFixed(2);
     watchStartTime = null;
 
-    htmx.trigger(watchDurationInput, 'submit');
+    htmx.trigger(watchDurationInput, "submit");
   }
 };
 
