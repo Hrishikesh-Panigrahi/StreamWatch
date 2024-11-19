@@ -51,3 +51,4 @@ dislike.addEventListener("htmx:afterSwap", function (event) {
     });
   }
 });
+

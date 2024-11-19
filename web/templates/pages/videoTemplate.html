@@ -1,4 +1,4 @@
-{{define "title"}} {{ .data.Video.Name }} {{end}}
+{{define "title"}} Video {{end}}
 {{define "videoTemplate"}}
 
 <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
@@ -101,6 +101,11 @@
 <script src="../../static/js/watchLog.js"></script>
 <script src="../../static/js/likeManager.js"></script>
 
+<script>
+    window.addEventListener('beforeunload', () => {
+        navigator.sendBeacon('http://localhost:8080/test', JSON.stringify({ action: 'leaving page' }));
+    });
+</script>
 
 <script>
     var player = videojs('video');
