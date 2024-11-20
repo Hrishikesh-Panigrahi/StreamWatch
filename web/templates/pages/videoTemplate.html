@@ -13,7 +13,7 @@
     "duration": accumulatedTime,}' type="hidden" id="watchDuration" name="duration" value="0" class="hidden">
 
     <div id="duration" class="hidden" hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" hx-target="#duration"
-        hx-trigger="load" hx-swap="outerHTML"></div>
+        hx-trigger="load" hx-swap="innerHTML"></div>
 
     <div id="container" class="w-4/5 h-4/5 mx-auto rounded-lg overflow-hidden relative group">
         <!-- VIDEO -->

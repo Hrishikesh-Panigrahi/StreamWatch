@@ -24,4 +24,10 @@ video.addEventListener("pause", stopTimer);
 video.addEventListener("ended", stopTimer);
 window.addEventListener("beforeunload", stopTimer);
 
-console.log("the watchlog is....", getwatchLog.innerHTML);
+getwatchLog.addEventListener("htmx:afterSwap", function (event) {
+  console.log("The watchlog is updated to: ", getwatchLog.innerHTML);
+  video.currentTime = parseFloat(getwatchLog.innerHTML);
+  video.play();
+}
+);
+console.log("the LOAD watchlog is....", getwatchLog.innerHTML);
