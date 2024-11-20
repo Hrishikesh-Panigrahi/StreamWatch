@@ -12,8 +12,11 @@
     <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_FUNpkbm3tJHYt4I6WjtOtdizk-LcgPi0YA&s" type="image/x-icon">
+
     <link rel="stylesheet" href="../../static/css/style.css">
 </head>
+
 <body class="overflow-x-hidden">
     <div class="bg-black w-full">
         <button id="toggleSidebar"
@@ -22,7 +25,6 @@
         </button>
 
         <div class="flex min-h-screen bg-gray-100">
-            <!-- Sidebar -->
             <aside id="sidebar"
                 class="hidden w-64 bg-gray-800 text-gray-200 p-4 flex-shrink-0 transform transition-transform duration-300 ease-in-out">
                 <button id="closeSidebar" class="text-gray-400 hover:text-white absolute top-4 right-4">
@@ -41,13 +43,13 @@
                             <a href="/create/video" class="block px-3 py-2 hover:bg-gray-700 rounded">Create Video</a>
                         </li>
                         <li class="mb-2">
-                            <a href="/video" class="block px-3 py-2 hover:bg-gray-700 rounded">Videos</a>
+                            <a href="/user" class="block px-3 py-2 hover:bg-gray-700 rounded">My Profile</a>
                         </li>
                     </ul>
                 </nav>
             </aside>
 
-            <main class="flex-grow">
+            <main class="h-screen w-full">
                 {{ if eq .data.Title "Index" }}
                 {{ block "contentIndex" . }}{{ end }}
                 {{ else if eq .data.Title "Login" }}
@@ -72,25 +74,8 @@
         </div>
     </div>
 
-    <script>
-        const toggleSidebar = document.getElementById("toggleSidebar");
-        const closeSidebar = document.getElementById("closeSidebar");
-        const sidebar = document.getElementById("sidebar");
+    <script src="../../static/js/sidebar.js"></script>
 
-        toggleSidebar.addEventListener("click", function () {
-            if (sidebar.classList.contains("hidden")) {
-                sidebar.classList.remove("hidden");
-                sidebar.classList.add("translate-x-0");
-            } else {
-                sidebar.classList.add("hidden");
-                sidebar.classList.remove("translate-x-0");
-            }
-        });
-
-        closeSidebar.addEventListener("click", () => {
-            sidebar.classList.add("hidden");
-        });
-    </script>
 </body>
 
 

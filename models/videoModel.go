@@ -1,5 +1,11 @@
 package models
 
+import (
+	"strings"
+
+	"gorm.io/gorm"
+)
+
 type Video struct {
 	User              User   `json:"user" gorm:"foreignkey:UserID"`
 	UserID            uint   `json:"user_id"` // Foreign key
@@ -12,21 +18,20 @@ type Video struct {
 	OriginalVideoPath string `json:"original_video_path" gorm:"type:varchar(100);not null"`
 }
 
-// func (v *Video) BeforeCreate() (err error) {
-// 	v.UUID = uuid.New().String()
-// 	return
-// }
+func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
+	tags := strings.Split(v.Tags, ",")
 
-// func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
-// 	videoPath := v.Path
-// 	videoPath = videoPath[:len(videoPath)-10]
+	for _, tag := range tags {
+		tag = strings.TrimSpace(tag)
+		trendingTag := TrendingTags{
+			Tag:         tag,
+			Usage_count: 0,
+		}
 
-// 	videoPath = videoPath + v.Name + ".mp4"
-// 	v.OriginalVideoPath = videoPath
+		if err := tx.FirstOrCreate(&trendingTag, TrendingTags{Tag: tag}).Error; err != nil {
+			return err
+		}
+	}
 
-// 	// Save the updated `OriginalVideoPath` field to the database
-// 	if err = tx.Save(v).Error; err != nil {
-// 		return err
-// 	}
-// 	return
-// }
+	return nil
+}

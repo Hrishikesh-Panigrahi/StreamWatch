@@ -15,10 +15,13 @@
     <div id="duration" class="hidden" hx-get="/video/{{ .data.Video.UUID }}/getwatchlog" hx-target="#duration"
         hx-trigger="load" hx-swap="innerHTML"></div>
 
-    <div id="container" class="w-4/5 h-4/5 mx-auto rounded-lg overflow-hidden relative group">
+    <input id="getID" class="hidden" value="{{ .data.Video.UUID }}"></input>
+
+    <div id="container" class="w-4/5 h-4/5 mx-auto rounded-lg overflow-hidden relative group aspect-video">
         <!-- VIDEO -->
         <figure>
-            <video id="video" class="w-full" class="video-js vjs-default-skin">
+            <video id="video" class="w-full h-auto max-w-full max-h-screen object-cover"
+                class="video-js vjs-default-skin">
                 <source
                     src="tempVideos/{{ .data.Video.Name }}_{{ .data.Video.User.Name }}_{{ .data.Video.UUID }}/master.m3u8"
                     type="application/x-mpegURL" />
@@ -27,7 +30,7 @@
 
         <!-- CONTROLS -->
         <div id="controls"
-            class="opacity-0 p-5 absolute bottom-0 left-0 w-full transition-opacity duration-300 ease-linear group-hover:opacity-100">
+            class="opacity-0 absolute bottom-0 left-0 w-full p-4 transition-opacity duration-300 ease-linear group-hover:opacity-100 bg-gradient-to-t from-black via-transparent to-transparent">
             <!-- PROGRESS BAR -->
             <div id="progress-bar" class="h-1 w-full bg-white cursor-pointer mb-4">
                 <div id="progress-indicator" class="h-full w-0 bg-indigo-800 transition-all duration-500 ease-in-out">
@@ -47,7 +50,7 @@
 
                     <!-- FAST FORWARD BUTTON -->
                     <button id="fast-forward" class="transition-all duration-100 ease-linear hover:scale-125">
-                        <i class="material-icons text-white text-3xl w-12">forward_10 </i>
+                        <i class="material-icons text-white text-3xl">forward_10 </i>
                     </button>
                 </div>
 
@@ -68,7 +71,7 @@
         </div>
         <div class="flex items-center justify-end ml-auto gap-2 text-gray-400 ">
             <button id="send-like" hx-post="/video/{{ .data.Video.UUID }}/like" hx-target="#send-like"
-                hx-trigger="click" hx-swap="none" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2 
+            hx-trigger="click" hx-swap="none" class="py-1.5 px-3 hover:text-green-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2 
                 {{ if .data.LikedBy }} text-green-600 border-green-600 {{ end }}">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor">
@@ -81,7 +84,7 @@
                 </span>
             </button>
             <button id="send-dislike" hx-post="/video/{{ .data.Video.UUID }}/dislike" hx-target="#send-dislike"
-                hx-trigger="click" hx-swap="none" class="py-1.5 px-3 hover:text-red-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2
+            hx-trigger="click" hx-swap="none" class="py-1.5 px-3 hover:text-red-600 hover:scale-105 hover:shadow text-center border border-gray-300 rounded-md border-gray-400 h-8 text-sm flex items-center gap-1 lg:gap-2
                 {{ if .data.Dislikedby }} text-red-600 border-red-600 {{ end }}">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor">
@@ -90,7 +93,7 @@
                     </path>
                 </svg>
                 <span id="dislikeCount" hx-get="/video/{{ .data.Video.UUID }}/getdislike" hx-target="#dislikeCount"
-                    hx-trigger="load, every 5s" hx-swap="innerHTML">0
+                    hx-trigger="load" hx-swap="innerHTML">0
                 </span>
             </button>
         </div>
@@ -100,51 +103,6 @@
 <script src="../../static/js/script.js"></script>
 <script src="../../static/js/watchLog.js"></script>
 <!-- <script src="../../static/js/likeManager.js"></script> -->
-
-<script>
-    const like = document.querySelector("#likeCount");
-    const likeButton = document.querySelector("#send-like");
-    var likeCount;
-    const VideoUUID = "{{ .data.Video.UUID }}";
-
-    console.log(VideoUUID);
-
-    like.addEventListener("htmx:afterSwap", function (event) {
-        console.log("The like count is updated to: ", like.innerHTML);
-        likeCount = parseInt(like.innerHTML);
-        console.log("Initial like count:", likeCount);
-    });
-
-    likeButton.addEventListener("click", () => {
-        const isLiked = likeButton.classList.contains("text-green-600") &&
-            likeButton.classList.contains("border-green-600");
-
-        if (isLiked) {
-            // Unlike action
-            likeCount = likeCount - 1;
-            likeButton.classList.remove("text-green-600", "border-green-600");
-        } else {
-            // Like action
-            likeCount = likeCount + 1;
-            likeButton.classList.add("text-green-600", "border-green-600");
-        }
-
-        like.innerHTML = likeCount;
-        console.log("Updated like count:", likeCount);
-    });
-
-    window.addEventListener('beforeunload', () => {
-        const data = {
-            action: "leaving page",
-            likeCount: likeCount, // Current like count
-        };
-        const endpoint = `http://localhost:8080/video/${VideoUUID}/like`;
-
-        const success = navigator.sendBeacon(endpoint, JSON.stringify(data));
-
-        console.log("Beacon sent:", success, "Data:", data); // Debugging line
-    });
-</script>
 
 <script>
     var player = videojs('video');

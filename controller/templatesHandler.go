@@ -72,6 +72,9 @@ func VideoPageHandler() gin.HandlerFunc {
 			return
 		}
 
+		tag := video.Tags
+		utils.TrendingTagManager(c, tag)
+		
 		var likeCount int64
 		if err := dbConnector.DB.Model(&models.Likes{}).Where("video_id = ?", video.ID).Count(&likeCount).Error; err != nil {
 			fmt.Printf("Error retrieving like count: %v\n", err)
