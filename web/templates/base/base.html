@@ -43,7 +43,7 @@
                             <a href="/create/video" class="block px-3 py-2 hover:bg-gray-700 rounded">Create Video</a>
                         </li>
                         <li class="mb-2">
-                            <a href="/user" class="block px-3 py-2 hover:bg-gray-700 rounded">My Profile</a>
+                            <a href="/trending-tags" class="block px-3 py-2 hover:bg-gray-700 rounded">Trending Tags</a>
                         </li>
                     </ul>
                 </nav>
@@ -58,6 +58,8 @@
                 {{ block "createVideoTemplate" . }}{{ end }}
                 {{ else if eq .data.Title "Video" }}
                 {{ block "videoTemplate" . }}{{ end }}
+                {{ else if eq .data.Title "trendingTags" }}
+                {{ block "trendingTagsTemplate" . }}{{ end }}
                 {{ else if eq .data.Title "Error" }}
                 {{ block "errorTemplate" . }}{{ end }}
                 {{ else }}

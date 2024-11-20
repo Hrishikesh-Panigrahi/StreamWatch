@@ -1,0 +1,17 @@
+{{ define "title" }}Trending tags{{ end }}
+{{ define "trendingTagsTemplate" }}
+<section class="py-6 bg-black">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-4">Trending Tags</h2>
+
+        <div class="overflow-x-auto">
+            <div class="flex space-x-4 py-2">
+                {{ range .data.TrendingTags }}
+                <span
+                    class="inline-block bg-gray-700 text-white py-2 px-4 rounded-full text-sm hover:bg-gray-600 transition duration-300">{{ .Tag }}</span>
+                {{ end }}
+                </div>
+        </div>
+    </div>
+</section>
+{{ end }}
