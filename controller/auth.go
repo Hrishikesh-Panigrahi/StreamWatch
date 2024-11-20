@@ -91,10 +91,12 @@ func LoginHandler() gin.HandlerFunc {
 
 		c.SetSameSite(http.SameSiteLaxMode)
 		c.SetCookie("token", tokenString, 3600*24*30, "", "", false, true)
-		c.JSON(http.StatusOK, gin.H{})
+
+		render.Redirect(c, "/", http.StatusFound)
 	}
 }
 
+// LogoutHandler is a function to logout a user it deletes the jwt token cookie
 func LogoutHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie("token", "", -1, "", "", false, true)

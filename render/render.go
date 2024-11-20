@@ -24,10 +24,7 @@ func RenderError(c *gin.Context, status int, message string, template ...string)
 		Message string
 	}
 
-	data := ErrorData{
-		Title:   "Error",
-		Message: message,
-	}
+	data := ErrorData{Title: "Error", Message: message}
 
 	errorTemplate := "base.html"
 	if len(template) > 0 {

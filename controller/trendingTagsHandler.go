@@ -11,7 +11,6 @@ import (
 
 func TrendingTagsHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		trendingTags := utils.GetTrendingTags()
 
 		type Data struct {
@@ -19,7 +18,6 @@ func TrendingTagsHandler() gin.HandlerFunc {
 			Message      string
 			TrendingTags []models.TrendingTags
 		}
-
 		data := Data{Title: "trendingTags", Message: "this is index", TrendingTags: trendingTags}
 
 		render.RenderHtml(c, http.StatusOK, "base.html", data)

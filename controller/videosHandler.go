@@ -115,6 +115,5 @@ func CreateVideoHandler() gin.HandlerFunc {
 		}
 
 		render.Redirect(c, "/", http.StatusFound)
-
 	}
 }

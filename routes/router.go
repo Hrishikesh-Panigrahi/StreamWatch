@@ -37,8 +37,4 @@ func Routes(superRoute *gin.RouterGroup) {
 	
 	superRoute.GET("/trending-tags", controller.TrendingTagsHandler())
 
-
-	// test endpoint
-	superRoute.POST("/test", controller.TestHandler())
-
 }

@@ -1,16 +1,29 @@
-{{ define "title" }}Trending tags{{ end }}
+{{ define "title" }}Trending Tags{{ end }}
 {{ define "trendingTagsTemplate" }}
-<section class="py-6 bg-black">
+<section class="py-8 bg-black">
     <div class="max-w-screen-xl mx-auto px-4">
-        <h2 class="text-2xl font-bold mb-4">Trending Tags</h2>
-
+        <h2 class="text-3xl font-semibold text-center text-white mb-6">Trending Tags</h2>
         <div class="overflow-x-auto">
-            <div class="flex space-x-4 py-2">
-                {{ range .data.TrendingTags }}
-                <span
-                    class="inline-block bg-gray-700 text-white py-2 px-4 rounded-full text-sm hover:bg-gray-600 transition duration-300">{{ .Tag }}</span>
-                {{ end }}
-                </div>
+            <table class="min-w-full table-auto bg-gray-900 text-white rounded-lg shadow-lg">
+                <thead>
+                    <tr class="border-b border-gray-700">
+                        <th class="py-3 px-6 text-left text-lg font-medium">Tag</th>
+                        <th class="py-3 px-6 text-left text-lg font-medium">Usage Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .data.TrendingTags }}
+                    <tr class="hover:bg-gray-800 transition duration-300">
+                        <td class="py-3 px-6 text-sm font-medium text-gray-300">
+                            <span class="font-semibold">#{{ .Tag }}</span>
+                        </td>
+                        <td class="py-3 px-6 text-sm font-medium text-gray-400">
+                            {{ .Usage_count }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
         </div>
     </div>
 </section>

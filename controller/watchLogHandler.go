@@ -71,7 +71,6 @@ func GetWatchLogHandler() gin.HandlerFunc {
 		result := dbConnector.DB.Where("video_id = ? AND user_id = ?", video.ID, userID).First(&watchlog)
 
 		if result.Error != nil {
-			// render.RenderError(c, http.StatusNotFound, "Watch log not found.")
 			return
 		}
 

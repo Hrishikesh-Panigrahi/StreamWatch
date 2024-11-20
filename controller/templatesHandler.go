@@ -30,9 +30,8 @@ func HomePageHandler() gin.HandlerFunc {
 			Message string
 			Videos  []models.Video
 		}
-
 		data := Data{Title: "Index", Message: "this is index", Videos: videos}
-
+		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
@@ -98,9 +97,8 @@ func VideoPageHandler() gin.HandlerFunc {
 		} else {
 			dislikedBy = false
 		}
-
 		data := Data{Title: "Video", Message: "this is index", Video: video, LikeCount: likeCount, LikedBy: likedBy, Dislikedby: dislikedBy}
-
+		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
@@ -111,8 +109,8 @@ func LoginPageHandler() gin.HandlerFunc {
 			Title   string
 			Message string
 		}
-
 		data := Data{Title: "Login", Message: "this is Login page"}
+		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
@@ -123,8 +121,8 @@ func RegisterPageHandler() gin.HandlerFunc {
 			Title   string
 			Message string
 		}
-
 		data := Data{Title: "register", Message: "this is registration page"}
+		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
@@ -135,9 +133,8 @@ func CreateVideoPageHandler() gin.HandlerFunc {
 			Title   string
 			Message string
 		}
-
 		data := Data{Title: "Create Video", Message: "this is create video page"}
-
+		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}
 }
