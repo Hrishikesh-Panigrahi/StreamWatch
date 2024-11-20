@@ -32,3 +32,14 @@ func TrendingTagManager(c *gin.Context, tag string) {
 		}
 	}
 }
+
+func GetTrendingTags() []models.TrendingTags {
+	var trendingTags []models.TrendingTags
+
+	if err := dbConnector.DB.Order("usage_count desc").Limit(10).Find(&trendingTags).Error; err != nil {
+		fmt.Printf("Error getting trending tags: %v\n", err)
+		return nil
+	}
+
+	return trendingTags
+}

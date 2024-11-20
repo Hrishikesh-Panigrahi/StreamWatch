@@ -34,6 +34,8 @@ func Routes(superRoute *gin.RouterGroup) {
 	// frontend url -- The request responds to a url matching: /video?UUID=xxxx-xxxx-xxxx-xxxx
 	superRoute.GET("/video", middleware.AuthMiddleware, controller.VideoPageHandler())
 
+	
+	superRoute.GET("/trending-tags", controller.TrendingTagsHandler())
 
 
 	// test endpoint
