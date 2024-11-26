@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 	"os/exec"
 
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/render"
@@ -72,5 +73,49 @@ func GenerateMasterPlaylist(c *gin.Context, folderPath string, originalVideoPath
 		render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
 		return fmt.Errorf("ffmpeg error: %v", err)
 	}
+	return nil
+}
+
+func ThumbnailGeneration(c *gin.Context, folderPath string, originalVideoPath string) error {
+	thumbnailPath := folderPath + "/thumbnail.jpg"
+	cmd := exec.Command("ffmpeg", "-i", originalVideoPath, "-ss", "00:00:01.000", "-vframes", "1", thumbnailPath)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("ffmpeg error: %v", err)
+	}
+	return nil
+}
+
+func ThumbnailVideoGeneration(c *gin.Context, folderPath string, originalVideoPath string) error {
+	thumbnailVideoPath := folderPath + "/thumbnail.mp4"
+
+	if _, err := os.Stat(originalVideoPath); os.IsNotExist(err) {
+		return fmt.Errorf("original video does not exist: %s", originalVideoPath)
+	}
+
+	defer func() {
+		if _, err := os.Stat(thumbnailVideoPath); err == nil {
+			_ = os.Remove(thumbnailVideoPath) // Attempt to clean up
+			fmt.Printf("Cleaned up thumbnail file: %s\n", thumbnailVideoPath)
+		}
+	}()
+
+	cmd := exec.Command(
+		"ffmpeg",
+		"-i", originalVideoPath,
+		"-ss", "00:00:10", // Start at 10 seconds
+		"-t", "5", // Duration of 5 seconds
+		"-vf", "scale=320:240",
+		"-c:v", "libx264",
+		"-preset", "fast",
+		"-y",
+		thumbnailVideoPath,
+	)
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to generate thumbnail for %s: %v", originalVideoPath, err)
+	}
+
+	defer func() {}()
+
 	return nil
 }

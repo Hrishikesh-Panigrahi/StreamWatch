@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -70,8 +71,6 @@ func CreateVideoHandler() gin.HandlerFunc {
 		tags := c.PostForm("tags")
 		description := c.PostForm("description")
 
-		fmt.Print(fileHeader.Filename, name, tags, description)
-
 		filename := name
 		if len(filename) > 50 {
 			filename = filename[:50]
@@ -91,12 +90,22 @@ func CreateVideoHandler() gin.HandlerFunc {
 		}
 
 		masterPlaylist := folderPath + "/master.m3u8"
-		GenerateMasterPlaylistErr := utils.GenerateMasterPlaylist(c, folderPath, originalVideoPath)
 
-		if GenerateMasterPlaylistErr != nil {
-			render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
-			return
-		}
+		go func() {
+			GenerateMasterPlaylistErr := utils.GenerateMasterPlaylist(c, folderPath, originalVideoPath)
+
+			if GenerateMasterPlaylistErr != nil {
+				render.RenderError(c, http.StatusInternalServerError, "Failed to create video")
+				return
+			}
+		}()
+
+		// Thumbnail generation
+		go func() {
+			if err := utils.ThumbnailVideoGeneration(c, folderPath, originalVideoPath); err != nil {
+				log.Printf("Thumbnail generation failed: %v", err)
+			}
+		}()
 
 		video := models.Video{
 			UserID:            user.ID,
