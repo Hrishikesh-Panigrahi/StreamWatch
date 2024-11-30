@@ -31,6 +31,9 @@ func HomePageHandler() gin.HandlerFunc {
 			Videos  []models.Video
 		}
 		data := Data{Title: "Index", Message: "this is index", Videos: videos}
+
+		// caching this endpoint
+		
 		
 		render.RenderHtml(c, http.StatusOK, "base.html", data)
 	}

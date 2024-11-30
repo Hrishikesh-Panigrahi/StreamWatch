@@ -4,10 +4,14 @@ import (
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/controller"
 	"github.com/Hrishikesh-Panigrahi/StreamWatch/middleware"
 	"github.com/gin-gonic/gin"
+	shardedmap "github.com/zutto/shardedmap"
 )
 
 func Routes(superRoute *gin.RouterGroup) {
-	superRoute.GET("/", controller.HomePageHandler())
+	// Initialize the sharded map
+	shardmap := shardedmap.NewShardMap(24)
+
+	superRoute.GET("/", CheckEndpointInCache(shardmap), controller.HomePageHandler())
 
 	superRoute.GET("/login", controller.LoginPageHandler())
 	superRoute.POST("/login", controller.LoginHandler())
@@ -34,7 +38,21 @@ func Routes(superRoute *gin.RouterGroup) {
 	// frontend url -- The request responds to a url matching: /video?UUID=xxxx-xxxx-xxxx-xxxx
 	superRoute.GET("/video", middleware.AuthMiddleware, controller.VideoPageHandler())
 
-	
 	superRoute.GET("/trending-tags", controller.TrendingTagsHandler())
 
+}
+
+func InitRoutes() *gin.Engine {
+	router := gin.Default()
+	superRoute := router.Group("/api/v1")
+	Routes(superRoute)
+	return router
+}
+
+func CheckEndpointInCache(shardmap shardedmap.ShardMap) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Endpoint is working",
+		})
+	}
 }
