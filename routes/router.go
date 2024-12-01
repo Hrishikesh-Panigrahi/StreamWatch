@@ -7,11 +7,22 @@ import (
 	shardedmap "github.com/zutto/shardedmap"
 )
 
+type EndpointCache struct {
+	Endpoint string
+	Cache    []byte
+}
+
+// Routes function to define all the routes
 func Routes(superRoute *gin.RouterGroup) {
 	// Initialize the sharded map
 	shardmap := shardedmap.NewShardMap(24)
 
-	superRoute.GET("/", CheckEndpointInCache(shardmap), controller.HomePageHandler())
+	// TestEndpoint
+	superRoute.GET("/check", CheckEndpointInCache(shardmap, "/check", func(c *gin.Context) []byte {
+		return []byte("Hello, World!")
+	}))
+
+	superRoute.GET("/", controller.HomePageHandler())
 
 	superRoute.GET("/login", controller.LoginPageHandler())
 	superRoute.POST("/login", controller.LoginHandler())
@@ -40,6 +51,17 @@ func Routes(superRoute *gin.RouterGroup) {
 
 	superRoute.GET("/trending-tags", controller.TrendingTagsHandler())
 
+	// TODO Routes
+	// superRoute.GET("/search", controller.SearchHandler())
+
+	// superRoute.GET("/profile", middleware.AuthMiddleware, controller.ProfilePageHandler())
+	// superRoute.GET("/profile/:username", controller.ProfilePageHandler())
+
+	// superRoute.GET("/verify-email", controller.VerifyEmailHandler())
+	// superRoute.GET("/forgot-password", controller.ForgotPasswordPageHandler())
+	// superRoute.POST("/forgot-password", controller.ForgotPasswordHandler())
+	// superRoute.GET("/reset-password", controller.ResetPasswordPageHandler())
+	// superRoute.POST("/reset-password", controller.ResetPasswordHandler())
 }
 
 func InitRoutes() *gin.Engine {
@@ -49,10 +71,24 @@ func InitRoutes() *gin.Engine {
 	return router
 }
 
-func CheckEndpointInCache(shardmap shardedmap.ShardMap) func(c *gin.Context) {
+func CheckEndpointInCache(shardmap shardedmap.ShardMap, endpoint string, handler func(*gin.Context) []byte) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Endpoint is working",
-		})
+		cachedEntry := shardmap.Get(endpoint)
+
+		if cachedEntry != nil {
+			cachedContent := (*cachedEntry).(EndpointCache)
+			c.Data(200, "text/plain", []byte(cachedContent.Cache))
+			return
+		}
+
+		html := handler(c)
+		var cacheEntry interface{} = EndpointCache{
+			Endpoint: endpoint,
+			Cache:    html,
+		}
+
+		shardmap.Set(endpoint, &cacheEntry)
+
+		c.Data(200, "text/plain", html)
 	}
 }
